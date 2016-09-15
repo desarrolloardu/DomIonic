@@ -431,14 +431,15 @@ var vm = this;
 
 		//	IR.insertar("tipo", "marca", "modelo", "funcion", "codigo").then(function(res){
 
-			IR.lista().then(function(res){
-				vm.listaIR = res;	
+		//	IR.lista().then(function(res){
+			//	vm.listaIR = res;	
 		//	})
-		},function(err){alert("error");});
+		//},function(err){alert("error");});
 
 		
 		IR.insertarMasivo().then(function(res){
 			$scope.listaPrueba=res
+			
 		});
 		// FIN TEST
 

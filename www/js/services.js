@@ -947,12 +947,32 @@ function actualizarLista () {
 							q.reject(err);
 							}
 					)*/
+					
+					
+					
 		
-				$http.get('test.csv').success(function(res) {
+			/*	$http.get('test.csv').success(function(res) {
 					var arrayIr = CSVToArray(res,";");
+					q.resolve(arrayIr)
+					
+				}) */
+				
+				$cordovaFile.checkFile(cordova.file.applicationStorageDirectory, 'hola.txt').then(function(res){
+					alert("salgo por success");
+					q.resolve(res)
+					
+					
+				},function(err){
+					alert('salgo por err');
+					$cordovaFile.createFile(cordova.file.applicationStorageDirectory, 'hola.txt', true)
+					q.resolve(err);
+					
+					
+					
+				})
 
 					//alert(arrayIr.length);
-					
+					/*
 					var i = 0;
 					var insertSQL = "INSERT INTO 'codigosIr' SELECT";
 
@@ -963,11 +983,7 @@ function actualizarLista () {
 					i++;
 
 					insertSQL += " UNION ALL SELECT ";
-					/*	INSERT INTO 'tablename'
-          SELECT 'data1' AS 'column1', 'data2' AS 'column2'
-UNION ALL SELECT 'data1', 'data2'
-UNION ALL SELECT 'data1', 'data2'
-UNION ALL SELECT 'data1', 'data2'*/
+					
 					while (i < arrayIr.length) {
 						
 						insertSQL += " '" + arrayIr[i][0] + "', '" + arrayIr[i][1] + "', '" +  arrayIr[i][2] + "', '" + arrayIr[i][3] + "', '" + arrayIr[i][4] + "'";
@@ -996,7 +1012,10 @@ UNION ALL SELECT 'data1', 'data2'*/
 
 						//q.resolve(arrayIr);	
 					});
-
+								*/
+								
+								
+								
 				return q.promise;
 			},
 
