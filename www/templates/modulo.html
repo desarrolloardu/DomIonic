@@ -1,0 +1,15 @@
+
+<ion-nav-buttons side="left">
+        <button class="button button-icon button-clear ion-arrow-left-c" menu-toggle="left">
+        </button>
+      </ion-nav-buttons>
+<ion-view view-title="Modulos">
+  <ion-content>
+    <h1>Modulos</h1>
+	
+	<div ng-repeat="it in mo.lista">
+	{{it.id}} - {{it.uuid}} - {{it.clave}} - {{it.descripcion}} - {{it.idModuloTipo}}
+	</div>
+  </ion-content>
+</ion-view>
+ 

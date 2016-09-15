@@ -1,0 +1,17 @@
+<ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">Seleccione una Imagen</h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeLogin()">Close</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+   <div class="list">
+		<a ng-repeat="imagen in imagenes" class="item item-thumbnail-left" ng-click="seleccionarImagen(imagen)">
+		  <img ng-src="{{imagen.urlImagen}}">
+		  <h2>{{imagen.desc}}</h2>
+		  <h2>{{imagen.cod}}</h2>
+		</a>
+	</div>
+  </ion-content>
+</ion-modal-view>

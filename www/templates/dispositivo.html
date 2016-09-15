@@ -1,0 +1,70 @@
+<ion-view view-title="Dispositivo">
+  <ion-content>
+
+	<!--
+	<input type="text" ng-model="di.textDispositivo">
+	<md-button class="md-raised">Button</md-button>
+	
+	<md-button ng-click="di.listar()" class="md-raised">Lista</md-button>
+
+	<div class="list">
+		<a ng-repeat="bt in di.lista" class="item item-thumbnail-left" >
+		  <h2>{{bt.name}}</h2>
+		  <h2>{{bt.id}}</h2>
+		  <h2>{{bt.address}}</h2>
+		</a>
+	</div>
+-->
+	<!--
+	<md-button ng-click="di.conectar()" class="md-raised">Conectar</md-button>
+	<md-button ng-click="di.conectar2()" class="md-raised">Conectar2</md-button>
+	<md-button ng-click="di.conectar3()" class="md-raised">Conectar3</md-button>
+	<md-button ng-click="di.conectar4()" class="md-raised">Conectar4</md-button>
+	
+	<input ng-model="di.intensidad" type="text" placeholder="Intensidad">
+	<md-button ng-click="di.enviar()" class="md-raised">Enviar</md-button>
+-->
+{{listaPrueba}}
+<div ng-if="di.dispositivo.idModuloTipo == 'DIMM'">
+	<div class="list">
+		<div class="item range range-positive">
+			<i class="icon ion-ios-sunny-outline"></i>
+			<input type="range" name="volume" min="0" max="20" value="0" ng-model="di.dimmerValor" ng-change="di.actualizarValorDimmer()">
+			<i class="icon ion-ios-sunny"></i>
+		</div>
+	</div>
+
+	<button class="button icon ion-battery-empty" ng-click="di.dimmerValor=0;di.actualizarValorDimmer()"></button>
+  <button class="button icon ion-battery-full" ng-click="di.dimmerValor=20;di.actualizarValorDimmer()"></button>
+	
+</div>
+
+<div ng-if="di.dispositivo.idModuloTipo == 'ZAP'">
+	<label class="toggle">
+		<input type="checkbox" ng-model="di.toggle" ng-change="di.toggleClick()">
+		<div class="track">
+			<div class="handle"></div>
+		</div>
+	</label>
+</div>
+
+<div ng-if="di.dispositivo.idModuloTipo == 'IR'">
+
+<button class="button icon ion-volume-low" ng-click=""></button>
+<button class="button icon ion-volume-high" ng-click=""></button>
+<button class="button icon ion-arrow-up-a" ng-click=""></button>
+<button class="button icon ion-arrow-down-a" ng-click=""></button>
+<button class="button icon ion-volume-mute" ng-click=""></button>
+ 
+<div class="list">
+		<a ng-repeat="codigo in di.listaIR" class="item item-thumbnail-left">
+		  <h2>{{codigo.modelo}}</h2>
+		  <h2>{{codigo.funcion}}</h2>
+		</a>
+	</div>
+
+
+</div>
+
+  </ion-content>
+</ion-view>

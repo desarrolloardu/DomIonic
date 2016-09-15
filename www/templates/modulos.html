@@ -1,0 +1,49 @@
+ 
+
+<ion-view view-title="Modulos">
+	
+	<ion-nav-bar class="bar-positive">
+		
+		<ion-nav-buttons side="left">
+      <button ng-click="mo.back()" class="button button-icon icon ion-ios-arrow-back"></button>	 </ion-nav-buttons>
+		
+  </ion-nav-bar>
+
+	
+  <ion-content>
+    
+	<div class="list">
+		<a ng-repeat="modulo in mo.lista" class="item item-thumbnail-left" on-hold="mo.openPopoverModulos($event, modulo.id)">
+		  <img ng-src="{{modulo.join.urlImagen}}">
+		  <h2>{{modulo.descripcion}}</h2>
+		  <h2>{{modulo.uuid}}</h2>
+		  <h2>{{modulo.join.idModuloTipo}}</h2>
+			
+		</a>
+	</div>
+		
+		
+  </ion-content>
+  <md-button class="md-fab float-button" aria-label="Alta Modulo" ui-sref="moduloAlta">
+		
+		<div class="content">
+            <i style="font-size:20px" class="fa fa-plus"></i>
+			</div>
+    </md-button>
+  
+  <script id="templates/popoverModulos.html" type="text/ng-template">
+			<ion-popover-view>
+					<ion-content>
+						<div class="list">
+							<a class="item" ng-click="editarModulo();">
+								Editar
+							</a>
+							 <a class="item" ng-click="eliminarModulo();">
+              Eliminar
+            </a>
+						</div>
+					</ion-content>
+			</ion-popover-view>
+	</script>
+</ion-view>
+ 

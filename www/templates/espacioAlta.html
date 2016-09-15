@@ -1,0 +1,38 @@
+<ion-view view-title="Alta Espacio">
+  <ion-nav-bar class="bar-positive">
+      <ion-nav-buttons side="left">
+      <button on-tap="ea.back()" class="button button-icon icon ion-ios-arrow-back"></button>	 </ion-nav-buttons>
+		
+		
+  </ion-nav-bar>
+  
+ 
+  
+  <ion-content>
+    
+	
+	<div class="list">
+  <label class="item item-input item-floating-label">
+    <span class="input-label">Descripcion</span>
+    <input ng-model="ea.descripcion" type="text" placeholder="Descripcion">
+  </label>
+  
+	<a class="item item-thumbnail-left" ng-click="ea.seleccionarImagen()">
+		  <img ng-src="{{ea.urlImagen}}">
+		  <h2>{{ea.descImagen}}</h2>
+	</a>
+
+  <!--
+  <label class="item item-input item-floating-label ">
+    <span class="input-label">Imagen</span>
+    <input ng-model="ea.urlImagen" type="text" placeholder="Imagen">
+  </label>
+  -->
+  
+</div>
+		 
+	<md-button ng-click="ea.alta()" class="md-raised">Guardar</md-button>
+	
+  </ion-content>
+</ion-view>
+ 

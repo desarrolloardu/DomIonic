@@ -1,0 +1,20 @@
+<ion-view view-title="Seleccionar Imagen">
+  <ion-content>
+	<div class="list">
+		<a ng-repeat="imagen in im.lista" class="item item-thumbnail-left" ng-click="im.seleccionar(imagen)">
+		  <img ng-src="{{imagen.urlImagen}}">
+		  <h2>{{imagen.desc}}</h2>
+		  <h2>{{imagen.cod}}</h2>
+		</a>
+	</div>
+
+  </ion-content>
+</ion-view>
+ 
+
+
+
+
+  
+ 
+  

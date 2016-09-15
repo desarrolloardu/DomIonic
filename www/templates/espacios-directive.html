@@ -1,0 +1,25 @@
+<div class="list">
+		<a ng-repeat="espacio in es.lista" class="item item-thumbnail-left" on-tap="es.seleccionarEspacio(espacio.id)" on-hold="es.openPopoverEspacios($event, espacio.id)">
+		  <img ng-src="{{espacio.urlImagen}}">
+		  <h2>{{espacio.descripcion}}</h2>
+		  <h2>{{espacio.urlImagen}}</h2>
+		</a>
+	</div>
+
+  
+  
+
+		<script id="templates/popoverEspacios.html" type="text/ng-template">
+			<ion-popover-view>
+				<ion-content>
+					<div class="list">
+						<a class="item" ng-click="editarEspacio();">
+							Editar
+						</a>
+						 <a class="item" ng-click="eliminarEspacio();">
+              Eliminar
+            </a>
+					</div>
+				</ion-content>
+			</ion-popover-view>
+		</script>

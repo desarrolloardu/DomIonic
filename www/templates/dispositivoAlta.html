@@ -1,0 +1,77 @@
+<ion-view view-title="Alta Dispositivo">
+  
+  <ion-nav-bar class="bar-positive">
+      <ion-nav-buttons side="left">
+      <button on-tap="di.back()" class="button button-icon icon ion-ios-arrow-back"></button>	 </ion-nav-buttons>
+		
+		
+  </ion-nav-bar>
+  
+  <ion-content>
+   
+    
+    
+    
+   
+	<div class="list">
+	
+  <label class="item item-input item-floating-label ">
+    <span class="input-label">Nombre</span>
+    <input ng-model="di.nombre" type="text" placeholder="Nombre">
+  </label>
+  <label class="item item-input item-floating-label">
+    <span class="input-label">Descripcion</span>
+    <input ng-model="di.descripcion" type="text" placeholder="Descripcion">
+  </label>
+
+  <span class="input-label">Imagen</span>
+	<a class="item item-thumbnail-left" ng-click="di.seleccionarImagen()">
+		  <img ng-src="{{di.urlImagen}}">
+		  <h2>{{di.descImagen}}</h2>
+	</a>
+
+	<!--
+    <input ng-model="di.urlImagen" type="text" placeholder="Imagen">
+	-->
+	
+   <label class="item item-input item-select">
+    <div class="input-label">
+      Espacio
+    </div>
+    <select ng-model="di.idEspacio" >
+	    <option value="">Seleccione</option>
+      <option ng-repeat="es in di.lista" value="{{es.id}}">{{es.descripcion}}</option>
+      
+    </select>
+  </label>
+
+  <label class="item item-input item-select">
+    <div class="input-label">
+      Modulo
+    </div>
+    <select ng-model="di.idModulo" >
+    	<option value="">Seleccione</option>
+      <option ng-repeat="es in di.listaModulos" value="{{es.id}}">{{es.descripcion}}</option>
+      
+    </select>
+  </label>
+
+  <label class="item item-input item-select">
+    <div class="input-label">
+      Entrada
+    </div>
+    <select ng-model="di.entradaModulo" >
+      <option value="">Seleccione</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+    </select>
+  </label>
+ 
+</div>
+	
+	 
+	<md-button ng-click="di.alta()" class="md-raised">Guardar</md-button>
+	
+  </ion-content>
+</ion-view>
+ 

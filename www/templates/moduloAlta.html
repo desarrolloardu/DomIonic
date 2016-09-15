@@ -1,0 +1,95 @@
+<ion-view view-title="Alta Modulo">
+  <ion-nav-bar class="bar-positive">
+      <ion-nav-buttons side="left">
+      <button on-tap="ma.back()" class="button button-icon icon ion-ios-arrow-back"></button>	 </ion-nav-buttons>
+		
+		
+  </ion-nav-bar>
+  
+  
+  <ion-content>
+    
+    
+     
+    
+	
+	<div class="list">
+  <label class="item item-input item-floating-label">
+    <span class="input-label">Descripcion</span>
+    <input ng-model="ma.descripcion" type="text" placeholder="Descripcion">
+  </label>
+  
+ 
+  <a class="item item-icon-right" ng-click="ma.abrirModalModulo()">
+    
+    
+    <p>{{ma.displayNombre}}  <br/><span style="color:#A4A4A4">
+      {{ma.displayUuid}}
+    </span></p> 
+    
+    <i class="icon ion-ios-arrow-right"></i>
+    
+   
+    
+  </a>
+  
+  
+  
+   <label class="item item-input item-select">
+    <div class="input-label">
+      Tipo Modulo
+    </div>
+    <select ng-model="ma.selectTipo" >
+	<option value="">Seleccione</option>
+      <option ng-repeat="it in ma.tipoModulos" value="{{it.cod}}">{{it.desc}}</option>
+      
+    </select>
+  </label>
+  
+</div>
+	
+	
+	
+	<!--
+	
+	<md-input-container md-no-float class="md-block">
+        <label>Descripcion</label>
+        <input ng-model="ma.descripcion">
+    </md-input-container>
+	
+	
+	
+	<md-input-container md-no-float class="md-block">
+        <label>UUID</label>
+        <input ng-model="ma.uuid">
+    </md-input-container>
+	
+	
+	
+	
+	<md-input-container md-no-float class="md-block">
+        <label>Clave</label>
+        <input ng-model="ma.clave">
+    </md-input-container>
+	
+	
+	
+	
+	<md-input-container  >
+	<label>Tipo</label>
+	<md-select ng-model="ma.selectTipo" placeholder="Select a state">
+	
+          <md-option ng-repeat="it in ma.lista" ng-value="it.cod">
+            {{it.desc}}
+          </md-option>
+        </md-select>
+	 </md-input-container>
+
+-->
+
+	 
+	<md-button ng-click="ma.alta()" class="md-raised">Guardar</md-button>
+	
+  </ion-content>
+</ion-view>
+ 
