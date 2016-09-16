@@ -440,6 +440,7 @@ var vm = this;
 		IR.insertarMasivo().then(function(res){
 			$scope.listaPrueba=res
 			
+
 		});
 		// FIN TEST
 

@@ -810,6 +810,37 @@ function actualizarLista () {
 		
 		
 	})
+	
+	
+	function insertIrCodigos  (arrayCod,indexActual) {
+					var q = $q.defer();
+					var indexTotal = arrayCod.length - 1;
+					
+					var query = "INSERT INTO codigosIr (tipo, marca, modelo, funcion, codigo) VALUES (?,?,?,?,?)";
+				$cordovaSQLite.execute(db, query, [arrayCod[indexActual][0], arrayCod[indexActual][1], arrayCod[indexActual][2], arrayCod[indexActual][3], arrayCod[indexActual][4]])
+				.then(
+						function(res) {
+							alert("insertoFila" + indexActual +"----"+ indexTotal);
+								if(indexActual < indexTotal){
+									
+									insertIrCodigos(arrayCod,indexActual+1)
+									
+								} else {
+									
+									q.resolve("inserto todo");
+									
+								}
+								
+							},
+						function (err) {
+							$cordovaToast.show("ERROR INSERT", 'long', 'center');
+							q.reject(err);
+							}
+							
+							)
+					
+					
+					} 
 
 
 	function CSVToArray( strData, strDelimiter ){
@@ -957,19 +988,36 @@ function actualizarLista () {
 					
 				}) */
 				
-				$cordovaFile.checkFile(cordova.file.applicationStorageDirectory, 'hola.txt').then(function(res){
-					alert("salgo por success");
-					q.resolve(res)
+				
+				
+				
+				
+				$cordovaFile.checkFile(cordova.file.applicationStorageDirectory, 'test.csv').then(function(res){
 					
+				alert('ya ue leido test.csv')
 					
+					q.resolve()
 				},function(err){
-					alert('salgo por err');
-					$cordovaFile.createFile(cordova.file.applicationStorageDirectory, 'hola.txt', true)
-					q.resolve(err);
+					
+							$http.get('test.csv').success(function(res) {
+							var arrayIr = CSVToArray(res,";");
+								insertIrCodigos(arrayIr,0)
+								
+							})
 					
 					
 					
-				})
+					$cordovaFile.createFile(cordova.file.applicationStorageDirectory, 'test.csv', true)
+					q.resolve();
+					
+					
+					
+				})  
+				
+				
+				
+				
+				
 
 					//alert(arrayIr.length);
 					/*
