@@ -184,7 +184,7 @@ $ionicPopover.fromTemplateUrl('templates/popoverEspacios.html', {
   });
   
   
-  $rootScope.$on('controlador:espaciosDirective', function(e) {
+  $scope.$on('controlador:espaciosDirective', function(e) {
   
 Espacios.lista().then( 
 				function(res){

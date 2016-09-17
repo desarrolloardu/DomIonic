@@ -171,7 +171,7 @@ angular.module('starter.controllers', [])
 			$cordovaBluetoothSerial.discoverUnpaired().then(function(lista){
 				$ionicLoading.hide();
 				
-				if(lista.lenght){
+				if(lista.length){
 				$scope.listaModulos=lista;
 					}else{
 					
@@ -437,11 +437,17 @@ var vm = this;
 		//},function(err){alert("error");});
 
 		
-		IR.insertarMasivo().then(function(res){
-			$scope.listaPrueba=res
+		
+		/*	
+			IR.lista().then(function(res){
+				
+				$scope.listaPrueba=res
+				
+			})
+		*/	
+		
 			
-
-		});
+		
 		// FIN TEST
 
 
@@ -811,7 +817,7 @@ vm.back = function() {
 })
 
 
-.controller('EspaciosCtrl', function($rootScope, $state, $scope, Espacios, $ionicPopover) {
+.controller('EspaciosCtrl', function($rootScope, $state, $scope, Espacios, $ionicPopover,$ionicLoading, IR) {
 
 var vm = this;
 //var onholdPresionado = false;
@@ -820,12 +826,21 @@ var vm = this;
   
  
  $scope.$on('$ionicView.enter', function(e) {
-	$rootScope.$broadcast('controlador:espaciosDirective');
+
+	 $ionicLoading.show({
+      template: 'Actualizando...'
+    	}).then(function(){
+
+	 	IR.insertarMasivo().then(function(res){
+			 
+			 $ionicLoading.hide();
+		 })
+		 //alert("inserteok");
+	 
+	 })
+	 
+	$scope.$broadcast('controlador:espaciosDirective');
 });
 	
 
-})
-
-
-
-;
+});

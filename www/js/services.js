@@ -347,7 +347,7 @@ function actualizarLista () {
 			actualizar: function(id, uuid,nombre, clave, descripcion, idModuloTipo){
 				//alert(id);
 				var q = $q.defer();
-				var query = "UPDATE modulos SET uuid = ?,nombre= ? clave = ?, descripcion = ?, idModuloTipo = ? WHERE id = ?";
+				var query = "UPDATE modulos SET uuid = ?,nombre= ?, clave = ?, descripcion = ?, idModuloTipo = ? WHERE id = ?";
 				$cordovaSQLite.execute(db, query, [uuid,nombre, clave, descripcion, idModuloTipo, id])
 				.then(
 						function(res) {
@@ -764,6 +764,7 @@ function actualizarLista () {
 .factory("IR", ['$cordovaSQLite', '$cordovaToast', '$rootScope', '$q','FactoryDB', '$http','$cordovaFile', function($cordovaSQLite, $cordovaToast, $rootScope, $q, FactoryDB, $http, $cordovaFile){
 	var lista;
 	var db = null;
+	
 		
 	db=FactoryDB.punteroDb();
 	
@@ -804,7 +805,7 @@ function actualizarLista () {
 			};
 			
 			
-	$rootScope.$on('actualizarLista:Dispositivos',function(){
+	$rootScope.$on('actualizarLista:IR',function(){
 		
 		actualizarLista();
 		
@@ -812,29 +813,29 @@ function actualizarLista () {
 	})
 	
 	
-	function insertIrCodigos  (arrayCod,indexActual) {
-					var q = $q.defer();
+	function insertIrCodigos  (arrayCod,indexActual,callback) {
+					//alert("insertIrCodigos");
 					var indexTotal = arrayCod.length - 1;
 					
 					var query = "INSERT INTO codigosIr (tipo, marca, modelo, funcion, codigo) VALUES (?,?,?,?,?)";
 				$cordovaSQLite.execute(db, query, [arrayCod[indexActual][0], arrayCod[indexActual][1], arrayCod[indexActual][2], arrayCod[indexActual][3], arrayCod[indexActual][4]])
 				.then(
 						function(res) {
-							alert("insertoFila" + indexActual +"----"+ indexTotal);
+							
 								if(indexActual < indexTotal){
 									
-									insertIrCodigos(arrayCod,indexActual+1)
+									insertIrCodigos(arrayCod,indexActual+1,callback)
 									
 								} else {
 									
-									q.resolve("inserto todo");
+									callback();
 									
 								}
 								
 							},
 						function (err) {
 							$cordovaToast.show("ERROR INSERT", 'long', 'center');
-							q.reject(err);
+							
 							}
 							
 							)
@@ -957,6 +958,8 @@ function actualizarLista () {
 			},
 
 			insertarMasivo: function(){
+				
+				
 				var q = $q.defer();
 				/*var query = "INSERT INTO codigosIr (tipo, marca, modelo, funcion, codigo) VALUES (?,?,?,?,?)";
 				$cordovaSQLite.execute(db, query, [tipo, marca, modelo, funcion, codigo])
@@ -994,21 +997,34 @@ function actualizarLista () {
 				
 				$cordovaFile.checkFile(cordova.file.applicationStorageDirectory, 'test.csv').then(function(res){
 					
-				alert('ya ue leido test.csv')
-					
 					q.resolve()
 				},function(err){
 					
+					
 							$http.get('test.csv').success(function(res) {
 							var arrayIr = CSVToArray(res,";");
-								insertIrCodigos(arrayIr,0)
+							//alert("insertarmasivo length: " + arrayIr.length);
+							
+								insertIrCodigos(arrayIr,0,function(res){
+								//	alert("insertarmasivo alert5");
+								actualizarLista().then(function(res){
+								//	alert("insertarmasivo alert6");
+									$cordovaFile.createFile(cordova.file.applicationStorageDirectory, 'test.csv', true)
+								q.resolve();
+									
+									
+								})	
+									
+									
+									
+									
+								})
 								
 							})
 					
 					
 					
-					$cordovaFile.createFile(cordova.file.applicationStorageDirectory, 'test.csv', true)
-					q.resolve();
+					
 					
 					
 					
