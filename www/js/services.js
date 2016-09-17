@@ -773,7 +773,7 @@ function actualizarLista () {
 
 			var q = $q.defer();
 			var respuesta = [];
-				var query = "SELECT id, tipo, marca, modelo, funcion, codigo FROM codigosIr";
+				var query = "SELECT id, tipo, marca, modelo FROM codigosIr";
 		
 			$cordovaSQLite.execute(db, query)
 			.then(
@@ -813,12 +813,29 @@ function actualizarLista () {
 	})
 	
 	
-	function insertIrCodigos  (arrayCod,indexActual,callback) {
-					//alert("insertIrCodigos");
-					var indexTotal = arrayCod.length - 1;
+	function truncateCodigosIr () {
+		var q = $q.defer();
+		var queryTruncate = "DELETE FROM 'codigosIr'";
+		$cordovaSQLite.execute(db, queryTruncate).then(function(res){
+			q.resolve(res);
+			
+		},function(err){
+			
+			q.reject(err)
+		})
+				
+		
+		return q.promise;
+	}
+	
+	
+	function insertIrCodigos  (arrayCod,indexActual,callback,calbackErr) {
 					
-					var query = "INSERT INTO codigosIr (tipo, marca, modelo, funcion, codigo) VALUES (?,?,?,?,?)";
-				$cordovaSQLite.execute(db, query, [arrayCod[indexActual][0], arrayCod[indexActual][1], arrayCod[indexActual][2], arrayCod[indexActual][3], arrayCod[indexActual][4]])
+					var indexTotal = arrayCod.length - 1;
+					var query = "INSERT INTO codigosIr (id,tipo, marca, modelo) VALUES (?,?,?,?)";
+					
+					
+				$cordovaSQLite.execute(db, query, [arrayCod[indexActual][0], arrayCod[indexActual][1], arrayCod[indexActual][2], arrayCod[indexActual][3]])
 				.then(
 						function(res) {
 							
@@ -835,7 +852,7 @@ function actualizarLista () {
 							},
 						function (err) {
 							$cordovaToast.show("ERROR INSERT", 'long', 'center');
-							
+							callbackErr()
 							}
 							
 							)
@@ -932,10 +949,10 @@ function actualizarLista () {
 
 			actualizarLista:actualizarLista,
 
-			insertar: function(tipo, marca, modelo, funcion, codigo){
+			insertar: function(id,tipo, marca, modelo){
 				var q = $q.defer();
-				var query = "INSERT INTO codigosIr (tipo, marca, modelo, funcion, codigo) VALUES (?,?,?,?,?)";
-				$cordovaSQLite.execute(db, query, [tipo, marca, modelo, funcion, codigo])
+				var query = "INSERT INTO codigosIr (id,tipo, marca, modelo) VALUES (?,?,?,?)";
+				$cordovaSQLite.execute(db, query, [id,tipo, marca, modelo])
 				.then(
 						function(res) {
 								actualizarLista().then(function(res){
@@ -995,33 +1012,53 @@ function actualizarLista () {
 				
 				
 				
-				$cordovaFile.checkFile(cordova.file.applicationStorageDirectory, 'test.csv').then(function(res){
+				$cordovaFile.checkFile(cordova.file.applicationStorageDirectory, 'modelosIr.csv').then(function(res){
 					
-					q.resolve()
+					q.resolve();
+					
 				},function(err){
 					
 					
-							$http.get('test.csv').success(function(res) {
+							$http.get('modelosIr.csv').success(function(res) {
 							var arrayIr = CSVToArray(res,";");
 							//alert("insertarmasivo length: " + arrayIr.length);
-							
+							truncateCodigosIr().then(function(res){
+								
 								insertIrCodigos(arrayIr,0,function(res){
 								//	alert("insertarmasivo alert5");
 								actualizarLista().then(function(res){
 								//	alert("insertarmasivo alert6");
-									$cordovaFile.createFile(cordova.file.applicationStorageDirectory, 'test.csv', true)
+									$cordovaFile.createFile(cordova.file.applicationStorageDirectory, 'modelosIr.csv', true)
 								q.resolve();
 									
 									
+								},function(err){
+									$cordovaToast.show("ERROR actualizar lista", 'long', 'center');
+								q.reject(err);	
+									
 								})	
-									
-									
-									
-									
-								})
+									},function(err){
+										
+										$cordovaToast.show("ERROR insertar codigos ", 'long', 'center');
+										q.reject(err);
+									})
+								
+								
+								
+								
+								
+							},function(err){
+								
+								q.reject(err);
+							})
+								
 								
 							})
-					
+						.error(function(err){
+							$cordovaToast.show("ERROR al leer archivo ", 'long', 'center');
+							q.reject(err);
+							
+						})
 					
 					
 					
@@ -1082,6 +1119,167 @@ function actualizarLista () {
 								
 				return q.promise;
 			},
+			
+			filtrarTablaCodigosIr: function(tipo,marca){
+				var q = $q.defer();
+				var respuesta = {};
+				respuesta.listaTipo= [];
+				respuesta.listaMarca= [];
+				respuesta.listaModelo=[];
+				
+				var tipoIr = function() {
+					var q = $q.defer();
+					var query = "SELECT DISTINCT tipo FROM codigosIr"
+					$cordovaSQLite.execute(db, query)
+				.then(function(res){
+					if(res.rows.length > 0) {
+							
+							for(var i=0; i<res.rows.length; i++)
+							{
+									respuesta.listaTipo[i] = res.rows.item(i).tipo;
+							}
+							q.resolve()
+					}
+					
+					
+					},function(err){
+						q.reject(err);
+					})
+					
+					
+					return q.promise;
+				};
+				
+				
+				
+				var marcaIr = function(tipo) {
+					var q = $q.defer();
+					
+					var query = "SELECT DISTINCT marca FROM codigosIr WHERE tipo = ? "
+					
+					$cordovaSQLite.execute(db, query,[tipo])
+				.then(function(res){
+					if(res.rows.length > 0) {
+							
+							for(var i=0; i<res.rows.length; i++)
+							{
+									respuesta.listaMarca[i] = res.rows.item(i).marca;
+							}
+							q.resolve();
+					}
+					
+					
+					},function(err){
+						q.reject(err);
+					})
+					
+					return q.promise;
+					
+				};
+				
+				var modeloIr = function(tipo,marca) {
+					var q = $q.defer();
+					
+					var query = "SELECT DISTINCT modelo FROM codigosIr WHERE tipo = ? AND marca = ? "
+					
+					$cordovaSQLite.execute(db, query,[tipo,marca])
+				.then(function(res){
+					if(res.rows.length > 0) {
+							
+							for(var i=0; i<res.rows.length; i++)
+							{
+									respuesta.listaModelo[i] = res.rows.item(i).modelo;
+							}
+							q.resolve();
+					}
+					
+					
+					},function(err){
+						q.reject(err);
+					})
+					
+					return q.promise;
+					}
+				
+				
+				
+				if(!tipo ){
+					
+					tipoIr().then(function(res){
+						
+						q.resolve(respuesta);
+						
+						},function(err){
+						
+						q.reject(err)
+						
+					})			
+					
+				} else if (!marca ){
+					
+					tipoIr().then(function(res){
+						
+						marcaIr(tipo).then(function(res){
+							
+						q.resolve(respuesta);	
+							
+						},function(err){
+							q.reject(err)
+							
+						})
+						
+						
+						
+						},function(err){
+						
+						q.reject(err)
+						
+					})			
+					
+					
+				} else  {
+					tipoIr().then(function(res){
+						
+						marcaIr(tipo).then(function(res){
+							
+							modeloIr(tipo,marca).then(function(res){
+								
+							q.resolve(respuesta);		
+								
+							},function(err){
+								
+								q.reject(err)
+							})
+							
+							
+							
+							
+						},function(err){
+							q.reject(err)
+							
+						})
+						
+						
+						
+						},function(err){
+						
+						q.reject(err)
+						
+					})			
+					
+					
+					
+					
+				}
+				
+				
+				
+				
+				return q.promise;
+			},
+			
+			
+			
 
 
 			lista: function(){
@@ -1177,7 +1375,7 @@ function actualizarLista () {
 	
 	function(res) {
 
-					$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS codigosIr (id integer primary key AUTOINCREMENT, tipo text, marca text, modelo text, funcion text, codigo text)").then(
+					$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS codigosIr (id integer primary key , tipo text, marca text, modelo text)").then(
 
 	function(res) {	
 		

@@ -436,15 +436,18 @@ var vm = this;
 		//	})
 		//},function(err){alert("error");});
 
+		IR.filtrarTablaCodigosIr('aire ','Samsung').then(function(res){
+			$scope.listaPrueba=res
+			
+		},function(err){ alert(err)})
 		
-		
-		/*	
-			IR.lista().then(function(res){
+			
+			/*IR.lista().then(function(res){
 				
 				$scope.listaPrueba=res
 				
-			})
-		*/	
+			})*/
+			
 		
 			
 		
@@ -555,7 +558,12 @@ var vm = this;
 		$ionicHistory.goBack();
 		};
 	
-	
+	vm.objetoModulo = function(){
+		
+		vm.moduloSelect = Modulos.seleccionarId(vm.idModulo);
+		
+		
+	}
 	
 	$ionicModal.fromTemplateUrl('templates/my_modal_imagenes.html', {
     scope: $scope,
@@ -654,8 +662,10 @@ var vm = this;
 			
 			if(ObjetoId.idEspacio)
 			vm.idEspacio= ObjetoId.idEspacio.toString();
-			if(ObjetoId.idModulo)
+			if(ObjetoId.idModulo){
 			vm.idModulo= ObjetoId.idModulo.toString();
+			vm.objetoModulo();
+			}
 			if(ObjetoId.entradaModulo)	
 			vm.entradaModulo= ObjetoId.entradaModulo.toString();
 			
@@ -834,6 +844,11 @@ var vm = this;
 	 	IR.insertarMasivo().then(function(res){
 			 
 			 $ionicLoading.hide();
+		 },function(err){
+			 
+			
+			 $ionicLoading.hide();
+			 
 		 })
 		 //alert("inserteok");
 	 

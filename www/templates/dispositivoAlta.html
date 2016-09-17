@@ -49,12 +49,21 @@
     <div class="input-label">
       Modulo
     </div>
-    <select ng-model="di.idModulo" >
+    <select ng-model="di.idModulo" ng-change="di.objetoModulo()" >
     	<option value="">Seleccione</option>
-      <option ng-repeat="es in di.listaModulos" value="{{es.id}}">{{es.descripcion}}</option>
+      <option ng-repeat="es in di.listaModulos"  value="{{es.id}}">{{es.descripcion}}</option>
       
     </select>
   </label>
+  
+    <a ng-if="di.moduloSelect && di.moduloSelect.idModuloTipo == 'IR'" class="item item-icon-right" ng-click="ma.abrirModalModulo()">
+      <p>csdcdcsc  <br/><span style="color:#A4A4A4">
+        cdscscscds
+      </span></p> 
+      
+      <i class="icon ion-ios-arrow-right"></i>
+    </a>
+
 
   <label class="item item-input item-select">
     <div class="input-label">
