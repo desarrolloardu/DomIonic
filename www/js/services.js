@@ -1138,9 +1138,9 @@ function actualizarLista () {
 							{
 									respuesta.listaTipo[i] = res.rows.item(i).tipo;
 							}
-							q.resolve()
+							
 					}
-					
+					q.resolve()
 					
 					},function(err){
 						q.reject(err);
@@ -1165,9 +1165,9 @@ function actualizarLista () {
 							{
 									respuesta.listaMarca[i] = res.rows.item(i).marca;
 							}
-							q.resolve();
+							
 					}
-					
+					q.resolve();
 					
 					},function(err){
 						q.reject(err);
@@ -1190,9 +1190,9 @@ function actualizarLista () {
 							{
 									respuesta.listaModelo[i] = res.rows.item(i).modelo;
 							}
-							q.resolve();
+							
 					}
-					
+					q.resolve();
 					
 					},function(err){
 						q.reject(err);

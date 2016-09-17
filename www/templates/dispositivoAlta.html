@@ -56,6 +56,14 @@
     </select>
   </label>
   
+   <a  class="item item-icon-right" ng-click="di.abrirModalModulo()">
+      <p>{{di.moduloSelect.idModuloTipo}}<br/><span style="color:#A4A4A4">
+        {{di.moduloSelect.descripcion}}
+      </span></p> 
+      
+      <i class="icon ion-ios-arrow-right"></i>
+    </a>
+  
     <a ng-if="di.moduloSelect && di.moduloSelect.idModuloTipo == 'IR'" class="item item-icon-right" ng-click="ma.abrirModalModulo()">
       <p>csdcdcsc  <br/><span style="color:#A4A4A4">
         cdscscscds
@@ -82,5 +90,29 @@
 	<md-button ng-click="di.alta()" class="md-raised">Guardar</md-button>
 	
   </ion-content>
+  
+   <script id="dispositivoAlta/seleccionarModulo.html" type="text/ng-template">
+ <ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">Seleccione un Módulo </h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeLogin()">Close</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+      
+      
+   <div class="list">
+		<a ng-repeat="item in listaModulos" class="item " ng-click="seleccionarModulo(item)">
+		 <h2>{{item.descripcion}}</h2> 
+          <span class="item-note">
+      {{item.idModuloTipo}}
+    </span>
+		</a>
+	</div>
+  </ion-content>
+</ion-modal-view>
+</script>
+  
 </ion-view>
  

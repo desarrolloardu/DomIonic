@@ -436,7 +436,7 @@ var vm = this;
 		//	})
 		//},function(err){alert("error");});
 
-		IR.filtrarTablaCodigosIr('aire ','Samsung').then(function(res){
+		IR.filtrarTablaCodigosIr('aire ','hola').then(function(res){
 			$scope.listaPrueba=res
 			
 		},function(err){ alert(err)})
@@ -565,6 +565,27 @@ var vm = this;
 		
 	}
 	
+	$ionicModal.fromTemplateUrl('dispositivoAlta/seleccionarModulo.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modalSeleccionarModulo = modal;
+  });
+  
+  $scope.seleccionarModulo = function (item) {
+	  
+	  vm.moduloSelect = item;
+	  
+	  
+  }
+  
+  vm.abrirModalModulo = function () {
+	  
+	  $scope.modalSeleccionarModulo.show();
+	  
+  }
+	
+	
 	$ionicModal.fromTemplateUrl('templates/my_modal_imagenes.html', {
     scope: $scope,
     animation: 'slide-in-up'
@@ -627,6 +648,7 @@ var vm = this;
 
 	Modulos.lista().then(function(res){
 		vm.listaModulos = res;
+		$scope.listaModulos = res;
 		
 	});
 
@@ -639,6 +661,7 @@ var vm = this;
 			vm.urlImagen = './img/ionic.png';
 			vm.idEspacio = undefined;
 			vm.idModulo = undefined;
+			vm.moduloSelect = undefined;
 			vm.entradaModulo = undefined;
 			vm.descImagen= undefined;
 			vm.codImagen= undefined;
