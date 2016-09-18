@@ -243,9 +243,10 @@ angular.module('starter.controllers', [])
 		}
 		else
 		{
-			
-			var ObjetoTemp = Modulos.seleccionarId($stateParams.id);
-			
+			var ObjetoTemp;
+			Modulos.seleccionarId($stateParams.id).then(function(res){
+				ObjetoTemp=res;
+					
 			vm.descripcion = ObjetoTemp.descripcion;
 			vm.uuid = ObjetoTemp.uuid;
 			vm.clave = ObjetoTemp.clave;
@@ -258,6 +259,9 @@ angular.module('starter.controllers', [])
 			
 			if(ObjetoTemp.idModuloTipo)			
 			vm.selectTipo = ObjetoTemp.idModuloTipo.toString();
+				
+			})
+		
 			
 		}
 	});
