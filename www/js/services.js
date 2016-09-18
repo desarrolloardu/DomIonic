@@ -1204,12 +1204,13 @@ function actualizarLista () {
 				return q.promise;
 			},
 			
-			filtrarTablaCodigosIr: function(tipo,marca){
+			filtrarTablaCodigosIr: function(tipo,marca,modelo){
 				var q = $q.defer();
 				var respuesta = {};
 				respuesta.listaTipo= [];
 				respuesta.listaMarca= [];
 				respuesta.listaModelo=[];
+				
 				
 				var tipoIr = function() {
 					var q = $q.defer();
@@ -1261,7 +1262,9 @@ function actualizarLista () {
 					
 				};
 				
-				var modeloIr = function(tipo,marca) {
+					
+					
+					var modeloIr = function(tipo,marca) {
 					var q = $q.defer();
 					
 					var query = "SELECT DISTINCT modelo FROM codigosIr WHERE tipo = ? AND marca = ? "
@@ -1283,14 +1286,40 @@ function actualizarLista () {
 					})
 					
 					return q.promise;
+					};
+					
+					
+					
+					var getIdCodigoIr = function(tipo,marca,modelo) {
+					var q = $q.defer();
+					
+					var query = "SELECT id FROM codigosIr WHERE tipo = ? AND marca = ? AND modelo = ? "
+					
+					$cordovaSQLite.execute(db, query,[tipo,marca,modelo])
+				.then(function(res){
+					if(res.rows.length > 0) {
+							
+							
+									respuesta.idCodigoIr = res.rows.item(0).id;
+							
+							
 					}
+					q.resolve();
+					
+					},function(err){
+						q.reject(err);
+					})
+					
+					return q.promise;
+					};
+				
 				
 				
 				
 				if(!tipo ){
 					
 					tipoIr().then(function(res){
-						
+						respuesta.idCodigoIr = undefined;	
 						q.resolve(respuesta);
 						
 						},function(err){
@@ -1304,7 +1333,7 @@ function actualizarLista () {
 					tipoIr().then(function(res){
 						
 						marcaIr(tipo).then(function(res){
-							
+						respuesta.idCodigoIr = undefined;	
 						q.resolve(respuesta);	
 							
 						},function(err){
@@ -1321,13 +1350,14 @@ function actualizarLista () {
 					})			
 					
 					
-				} else  {
+				} else if(!modelo) {
+					
 					tipoIr().then(function(res){
 						
 						marcaIr(tipo).then(function(res){
 							
 							modeloIr(tipo,marca).then(function(res){
-								
+							respuesta.idCodigoIr = undefined;	
 							q.resolve(respuesta);		
 								
 							},function(err){
@@ -1353,6 +1383,48 @@ function actualizarLista () {
 					
 					
 					
+					
+				} else {
+					
+					tipoIr().then(function(res){
+						
+						marcaIr(tipo).then(function(res){
+							
+							modeloIr(tipo,marca).then(function(res){
+								
+								
+									getIdCodigoIr(tipo,marca,modelo).then(function(res){
+						
+						q.resolve(respuesta);
+					},function(err){
+						
+						q.reject(err)
+					});
+					
+						
+								
+							},function(err){
+								
+								q.reject(err)
+							})
+							
+							
+							
+							
+						},function(err){
+							q.reject(err)
+							
+						})
+						
+						
+						
+						},function(err){
+						
+						q.reject(err)
+						
+					})			
+					
+				
 					
 				}
 				

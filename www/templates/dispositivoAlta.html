@@ -7,7 +7,7 @@
 		
   </ion-nav-bar>
   
-  <ion-content>
+  <ion-content overflow-scroll="true">
    
     
     
@@ -63,7 +63,7 @@
       <i class="icon ion-ios-arrow-right"></i>
     </a>
   
-    <a ng-if="di.moduloSelect && di.moduloSelect.idModuloTipo == 'IR'" class="item item-icon-right" ng-click="ma.abrirModalTipoIr()">
+    <a  class="item item-icon-right" ng-click="di.abrirModalTipoIr()">
       <p>{{di.TipoIrSelect || 'Seleccione Tipo IR'}}  <br/><span style="color:#A4A4A4">
         
       </span></p> 
@@ -71,7 +71,7 @@
       <i class="icon ion-ios-arrow-right"></i>
     </a>
     
-      <a ng-if="di.moduloSelect && di.moduloSelect.idModuloTipo == 'IR'" class="item item-icon-right" ng-click="ma.abrirModalMarcaIr()">
+      <a  class="item item-icon-right" ng-click="di.abrirModalMarcaIr()">
       <p>{{di.MarcaIrSelect || 'Seleccione Marca '}}  <br/><span style="color:#A4A4A4">
         
       </span></p> 
@@ -79,7 +79,7 @@
       <i class="icon ion-ios-arrow-right"></i>
     </a>
     
-      <a ng-if="di.moduloSelect && di.moduloSelect.idModuloTipo == 'IR'" class="item item-icon-right" ng-click="ma.abrirModalModeloIr()">
+      <a  class="item item-icon-right" ng-click="di.abrirModalModeloIr()">
       <p>{{di.ModeloIrSelect || 'Seleccione Modelo'}}  <br/><span style="color:#A4A4A4">
         
       </span></p> 
@@ -150,6 +150,78 @@
   </ion-content>
 </ion-modal-view>
 </script>
+
+
+<script id="dispositivoAlta/seleccionarTipoIr.html" type="text/ng-template">
+ <ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">Seleccione tipo IR </h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeLogin()">Close</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+      
+      
+   <div class="list">
+		<a ng-repeat="item in listacodigosIr.listaTipo" class="item " ng-click="seleccionarCodigoIrTipo(item)">
+		 <h2>{{item}}</h2> 
+         
+    </span>
+		</a>
+	</div>
+  </ion-content>
+</ion-modal-view>
+</script>
+
+
+<script id="dispositivoAlta/seleccionarMarcaIr.html" type="text/ng-template">
+ <ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">Seleccione  Marca </h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeLogin()">Close</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+      
+      
+   <div class="list">
+		<a ng-repeat="item in listacodigosIr.listaMarca" class="item " ng-click="seleccionarCodigoIrMarca(item)">
+		 <h2>{{item}}</h2> 
+         
+    </span>
+		</a>
+	</div>
+  </ion-content>
+</ion-modal-view>
+</script>
+
+
+<script id="dispositivoAlta/seleccionarModeloIr.html" type="text/ng-template">
+ <ion-modal-view>
+  <ion-header-bar>
+    <h1 class="title">Seleccione  Marca </h1>
+    <div class="buttons">
+      <button class="button button-clear" ng-click="closeLogin()">Close</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+      
+      
+   <div class="list">
+		<a ng-repeat="item in listacodigosIr.listaModelo" class="item " ng-click="seleccionarCodigoIrModelo(item)">
+		 <h2>{{item}}</h2> 
+         
+    </span>
+		</a>
+	</div>
+  </ion-content>
+</ion-modal-view>
+</script>
+
+
+
   
 </ion-view>
  

@@ -424,7 +424,7 @@ var vm = this;
 		//	})
 		//},function(err){alert("error");});
 
-		IR.filtrarTablaCodigosIr('aire ','hola').then(function(res){
+		IR.filtrarTablaCodigosIr('aire ').then(function(res){
 			$scope.listaPrueba=res
 			
 		},function(err){ alert(err)})
@@ -552,6 +552,7 @@ var vm = this;
 		Modulos.seleccionarId(vm.idModulo).then(function(res){
 			
 			vm.moduloSelect=res;
+			alert(res.idModuloTipo);
 			
 		},function(err){
 			
@@ -607,6 +608,31 @@ var vm = this;
     $scope.modalSeleccionarEspacio = modal;
   });
   
+  
+  $ionicModal.fromTemplateUrl('dispositivoAlta/seleccionarTipoIr.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modalSeleccionarTipoIr = modal;
+  });
+  
+   $ionicModal.fromTemplateUrl('dispositivoAlta/seleccionarMarcaIr.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modalSeleccionarMarcaIr = modal;
+  });
+  
+  $ionicModal.fromTemplateUrl('dispositivoAlta/seleccionarModeloIr.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modalSeleccionarModeloIr = modal;
+  });
+  
+  
+  
+  
   $scope.seleccionarEspacio = function (item) {
 	  
 	  vm.espacioSelect = item;
@@ -626,6 +652,27 @@ var vm = this;
 	  $scope.modalSeleccionarEspacio.show();
 	  
   }
+  
+  vm.abrirModalTipoIr = function (){
+	  
+	  $scope.modalSeleccionarTipoIr.show();
+	  
+  }
+  
+  vm.abrirModalMarcaIr = function (){
+	  
+	  $scope.modalSeleccionarMarcaIr.show();
+	  
+  }
+  
+   vm.abrirModalModeloIr = function (){
+	  
+	  $scope.modalSeleccionarModeloIr.show();
+	  
+  }
+  
+	  
+  
 	
 	
 	$ionicModal.fromTemplateUrl('templates/my_modal_imagenes.html', {
