@@ -424,7 +424,7 @@ var vm = this;
 		//	})
 		//},function(err){alert("error");});
 
-		IR.filtrarTablaCodigosIr('aire ').then(function(res){
+		IR.filtrarTablaDispositivoIr('aire ').then(function(res){
 			$scope.listaPrueba=res
 			
 		},function(err){ alert(err)})
@@ -577,7 +577,7 @@ var vm = this;
 		
 	};
 	
-	vm.objetoCodigoIr = function(){
+	vm.objetoDispositivoIr = function(){
 	
 	
 	
@@ -757,7 +757,7 @@ var vm = this;
 			vm.entradaModulo = undefined;
 			vm.descImagen= undefined;
 			vm.codImagen= undefined;
-			vm.idCodigoIr= undefined;
+			vm.idDispositivoIr= undefined;
 		}
 		else
 		{
@@ -774,7 +774,7 @@ var vm = this;
 			vm.idModulo= undefined;
 			vm.moduloSelect = undefined;
 			vm.entradaModulo= undefined;
-			vm.idCodigoIr= undefined;
+			vm.idDispositivoIr= undefined;
 			vm.id = ObjetoId.id;
 			
 			
@@ -786,9 +786,9 @@ var vm = this;
 			vm.idModulo= ObjetoId.idModulo;
 			vm.objetoModulo();
 			}
-			if(ObjetoId.idCodigoIr){
-			vm.idCodigoIr= ObjetoId.idCodigoIr;
-			vm.objetoCodigoIr();
+			if(ObjetoId.idDispositivoIr){
+			vm.idDispositivoIr= ObjetoId.idDispositivoIr;
+			vm.objetoDispositivoIrr();
 			}
 			if(ObjetoId.entradaModulo)	
 			vm.entradaModulo= ObjetoId.entradaModulo.toString();

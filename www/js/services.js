@@ -582,7 +582,7 @@ function actualizarLista () {
 			var respuesta = [];
 		//	var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.idModulo, d.entradaModulo, m.descripcion as moduloDescripcion FROM dispositivos d INNER JOIN modulos m ON d.idModulo = m.id";
 		//	var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.idModulo, d.entradaModulo FROM dispositivos d";
-			var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.entradaModulo,d.idModulo,d.idCodigoIr, m.uuid, m.clave, m.descripcion AS moduloDescripccion, m.idModuloTipo FROM dispositivos d LEFT OUTER JOIN modulos m ON d.idModulo = m.id  ";
+			var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.entradaModulo,d.idModulo,d.idDispositivoIr, m.uuid, m.clave, m.descripcion AS moduloDescripccion, m.idModuloTipo FROM dispositivos d LEFT OUTER JOIN modulos m ON d.idModulo = m.id  ";
 		
 			$cordovaSQLite.execute(db, query)
 			.then(
@@ -625,10 +625,10 @@ function actualizarLista () {
 		
 		actualizarLista:actualizarLista,
 		
-		insertar: function(nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo,idCodigoIr){
+		insertar: function(nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo,idDispositivoIr){
 			var q = $q.defer();
-			var query = "INSERT INTO dispositivos (nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo,idCodigoIr) VALUES (?,?,?,?,?,?,?)";
-			$cordovaSQLite.execute(db, query, [nombre, descripcion, idEspacio, urlImagen, idModulo, entradaModulo,idCodigoIr])
+			var query = "INSERT INTO dispositivos (nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo,idDispositivoIr) VALUES (?,?,?,?,?,?,?)";
+			$cordovaSQLite.execute(db, query, [nombre, descripcion, idEspacio, urlImagen, idModulo, entradaModulo,idDispositivoIr])
 			.then(
 					function(res) {
 							
@@ -651,11 +651,11 @@ function actualizarLista () {
 			return q.promise;
 		},
 
-		actualizar: function(id, nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo,idCodigoIr){
+		actualizar: function(id, nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo,idDispositivoIr){
 			
 			var q = $q.defer();
-			var query = "UPDATE dispositivos SET nombre = ?, descripcion = ?, idEspacio = ?, urlImagen = ?,idModulo = ?, entradaModulo = ?,idCodigoIr = ? WHERE id = ?";
-			$cordovaSQLite.execute(db, query, [nombre, descripcion, idEspacio, urlImagen, idModulo, entradaModulo,idCodigoIr, id])
+			var query = "UPDATE dispositivos SET nombre = ?, descripcion = ?, idEspacio = ?, urlImagen = ?,idModulo = ?, entradaModulo = ?,idDispositivoIr = ? WHERE id = ?";
+			$cordovaSQLite.execute(db, query, [nombre, descripcion, idEspacio, urlImagen, idModulo, entradaModulo,idDispositivoIr, id])
 			.then(
 					function(res) {
 							
@@ -857,7 +857,7 @@ function actualizarLista () {
 
 			var q = $q.defer();
 			var respuesta = [];
-				var query = "SELECT id, tipo, marca, modelo FROM codigosIr";
+				var query = "SELECT id, tipo, marca, modelo FROM dispositivoIr";
 		
 			$cordovaSQLite.execute(db, query)
 			.then(
@@ -897,9 +897,9 @@ function actualizarLista () {
 	})
 	
 	
-	function truncateCodigosIr () {
+	function truncateDispositivoIr () {
 		var q = $q.defer();
-		var queryTruncate = "DELETE FROM 'codigosIr'";
+		var queryTruncate = "DELETE FROM 'dispositivoIr'";
 		$cordovaSQLite.execute(db, queryTruncate).then(function(res){
 			q.resolve(res);
 			
@@ -913,10 +913,10 @@ function actualizarLista () {
 	}
 	
 	
-	function insertIrCodigos  (arrayCod,indexActual,callback,calbackErr) {
+	function insertDispositivoIr  (arrayCod,indexActual,callback,calbackErr) {
 					
 					var indexTotal = arrayCod.length - 1;
-					var query = "INSERT INTO codigosIr (id,tipo, marca, modelo) VALUES (?,?,?,?)";
+					var query = "INSERT INTO dispositivoIr (id,tipo, marca, modelo) VALUES (?,?,?,?)";
 					
 					
 				$cordovaSQLite.execute(db, query, [arrayCod[indexActual][0], arrayCod[indexActual][1], arrayCod[indexActual][2], arrayCod[indexActual][3]])
@@ -925,7 +925,7 @@ function actualizarLista () {
 							
 								if(indexActual < indexTotal){
 									
-									insertIrCodigos(arrayCod,indexActual+1,callback)
+									insertDispositivoIr(arrayCod,indexActual+1,callback)
 									
 								} else {
 									
@@ -1035,7 +1035,7 @@ function actualizarLista () {
 
 			insertar: function(id,tipo, marca, modelo){
 				var q = $q.defer();
-				var query = "INSERT INTO codigosIr (id,tipo, marca, modelo) VALUES (?,?,?,?)";
+				var query = "INSERT INTO dispositivoIr (id,tipo, marca, modelo) VALUES (?,?,?,?)";
 				$cordovaSQLite.execute(db, query, [id,tipo, marca, modelo])
 				.then(
 						function(res) {
@@ -1062,7 +1062,7 @@ function actualizarLista () {
 				
 				
 				var q = $q.defer();
-				/*var query = "INSERT INTO codigosIr (tipo, marca, modelo, funcion, codigo) VALUES (?,?,?,?,?)";
+				/*var query = "INSERT INTO dispositivoIr (tipo, marca, modelo, funcion, codigo) VALUES (?,?,?,?,?)";
 				$cordovaSQLite.execute(db, query, [tipo, marca, modelo, funcion, codigo])
 				.then(
 						function(res) {
@@ -1106,9 +1106,9 @@ function actualizarLista () {
 							$http.get('modelosIr.csv').success(function(res) {
 							var arrayIr = CSVToArray(res,";");
 							//alert("insertarmasivo length: " + arrayIr.length);
-							truncateCodigosIr().then(function(res){
+							truncateDispositivoIr().then(function(res){
 								
-								insertIrCodigos(arrayIr,0,function(res){
+								insertDispositivoIr(arrayIr,0,function(res){
 								//	alert("insertarmasivo alert5");
 								actualizarLista().then(function(res){
 								//	alert("insertarmasivo alert6");
@@ -1159,7 +1159,7 @@ function actualizarLista () {
 					//alert(arrayIr.length);
 					/*
 					var i = 0;
-					var insertSQL = "INSERT INTO 'codigosIr' SELECT";
+					var insertSQL = "INSERT INTO 'dispositivoIr' SELECT";
 
 					insertSQL += " '" + arrayIr[i][0] + "' AS  'tipo' , '" + arrayIr[i][1] + "' AS  'marca', '" +  
 								arrayIr[i][2] + "' AS  'modelo', '" + arrayIr[i][3] + "' AS  'funcion', '" + 
@@ -1204,7 +1204,7 @@ function actualizarLista () {
 				return q.promise;
 			},
 			
-			filtrarTablaCodigosIr: function(tipo,marca,modelo){
+			filtrarTablaDispositivoIr: function(tipo,marca,modelo){
 				var q = $q.defer();
 				var respuesta = {};
 				respuesta.listaTipo= [];
@@ -1214,7 +1214,7 @@ function actualizarLista () {
 				
 				var tipoIr = function() {
 					var q = $q.defer();
-					var query = "SELECT DISTINCT tipo FROM codigosIr"
+					var query = "SELECT DISTINCT tipo FROM dispositivoIr"
 					$cordovaSQLite.execute(db, query)
 				.then(function(res){
 					if(res.rows.length > 0) {
@@ -1240,7 +1240,7 @@ function actualizarLista () {
 				var marcaIr = function(tipo) {
 					var q = $q.defer();
 					
-					var query = "SELECT DISTINCT marca FROM codigosIr WHERE tipo = ? "
+					var query = "SELECT DISTINCT marca FROM dispositivoIr WHERE tipo = ? "
 					
 					$cordovaSQLite.execute(db, query,[tipo])
 				.then(function(res){
@@ -1267,7 +1267,7 @@ function actualizarLista () {
 					var modeloIr = function(tipo,marca) {
 					var q = $q.defer();
 					
-					var query = "SELECT DISTINCT modelo FROM codigosIr WHERE tipo = ? AND marca = ? "
+					var query = "SELECT DISTINCT modelo FROM dispositivoIr WHERE tipo = ? AND marca = ? "
 					
 					$cordovaSQLite.execute(db, query,[tipo,marca])
 				.then(function(res){
@@ -1290,17 +1290,17 @@ function actualizarLista () {
 					
 					
 					
-					var getIdCodigoIr = function(tipo,marca,modelo) {
+					var getIdDispositivoIr = function(tipo,marca,modelo) {
 					var q = $q.defer();
 					
-					var query = "SELECT id FROM codigosIr WHERE tipo = ? AND marca = ? AND modelo = ? "
+					var query = "SELECT id FROM dispositivoIr WHERE tipo = ? AND marca = ? AND modelo = ? "
 					
 					$cordovaSQLite.execute(db, query,[tipo,marca,modelo])
 				.then(function(res){
 					if(res.rows.length > 0) {
 							
 							
-									respuesta.idCodigoIr = res.rows.item(0).id;
+									respuesta.idDispositivoIr = res.rows.item(0).id;
 							
 							
 					}
@@ -1319,7 +1319,7 @@ function actualizarLista () {
 				if(!tipo ){
 					
 					tipoIr().then(function(res){
-						respuesta.idCodigoIr = undefined;	
+						respuesta.idDispositivoIr = undefined;	
 						q.resolve(respuesta);
 						
 						},function(err){
@@ -1333,7 +1333,7 @@ function actualizarLista () {
 					tipoIr().then(function(res){
 						
 						marcaIr(tipo).then(function(res){
-						respuesta.idCodigoIr = undefined;	
+						respuesta.idDispositivoIr = undefined;	
 						q.resolve(respuesta);	
 							
 						},function(err){
@@ -1357,7 +1357,7 @@ function actualizarLista () {
 						marcaIr(tipo).then(function(res){
 							
 							modeloIr(tipo,marca).then(function(res){
-							respuesta.idCodigoIr = undefined;	
+							respuesta.idDispositivoIr = undefined;	
 							q.resolve(respuesta);		
 								
 							},function(err){
@@ -1393,7 +1393,7 @@ function actualizarLista () {
 							modeloIr(tipo,marca).then(function(res){
 								
 								
-									getIdCodigoIr(tipo,marca,modelo).then(function(res){
+									getIdDispositivoIr(tipo,marca,modelo).then(function(res){
 						
 						q.resolve(respuesta);
 					},function(err){
@@ -1527,18 +1527,23 @@ function actualizarLista () {
 	function(res) {
 		
 		
-		$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS dispositivos (id integer primary key AUTOINCREMENT, nombre text, descripcion text, idEspacio int, urlImagen text, idModulo  int, entradaModulo int,idCodigoIr int)").then(
+		$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS dispositivos (id integer primary key AUTOINCREMENT, nombre text, descripcion text, idEspacio int, urlImagen text, idModulo  int, entradaModulo int,idDispositivoIr int)").then(
 	
 	function(res) {
 
-					$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS codigosIr (id integer primary key , tipo text, marca text, modelo text)").then(
+					$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS dispositivoIr (id integer primary key , tipo text, marca text, modelo text)").then(
 
 	function(res) {	
 		
-		q.resolve();
-		
+					$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS funcionesIr (id integer primary key AUTOINCREMENT, idCodigo , tipo text, marca text, modelo text)").then(
+	
+	function(res) {	
 
-		}, function (err) {alert("ERROR TABLA codigosIr");q.reject(err)});
+		q.resolve();
+
+		}, function (err) {alert("ERROR TABLA funcionesIr");q.reject(err)});
+
+		}, function (err) {alert("ERROR TABLA dispositivoIr");q.reject(err)});
 		
 	}, function (err) {alert("ERROR TABLA dispositivos");q.reject(err)});
 		
