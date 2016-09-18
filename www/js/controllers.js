@@ -142,8 +142,8 @@ angular.module('starter.controllers', [])
 	$scope.seleccionarModulo= function (item) {
 		
 		$scope.modalModulos.hide();
-		vm.uuid=vm.displayUuid=item.address
-		vm.nombre=vm.displayNombre=item.name
+		vm.uuid=item.address
+		vm.nombre=item.name
 		
 	}
 	
@@ -239,8 +239,6 @@ angular.module('starter.controllers', [])
 			vm.selectTipo = undefined;
 			vm.nombre=undefined;
 			
-			vm.displayNombre='Seleccione Módulo';
-			vm.displayUuid='Mac Adress'
 			
 		}
 		else
@@ -256,17 +254,7 @@ angular.module('starter.controllers', [])
 			vm.nombre=ObjetoTemp.nombre;
 			vm.uuid=ObjetoTemp.uuid;
 			
-			if(ObjetoTemp.nombre){ 
-				vm.displayNombre=ObjetoTemp.nombre
-			}else{
-				vm.displayNombre='Seleccione Módulo';
-			};
 			
-			if(ObjetoTemp.uuid){ 
-				vm.displayUuid=ObjetoTemp.uuid
-			}else{
-				vm.displayNombre='Mac Adress';
-			}
 			
 			if(ObjetoTemp.idModuloTipo)			
 			vm.selectTipo = ObjetoTemp.idModuloTipo.toString();
@@ -554,16 +542,47 @@ var vm = this;
 
 	var vm = this;
 	
+	
 	vm.back= function () {
 		$ionicHistory.goBack();
 		};
 	
 	vm.objetoModulo = function(){
 		
-		vm.moduloSelect = Modulos.seleccionarId(vm.idModulo);
+		Modulos.seleccionarId(vm.idModulo).then(function(res){
+			
+			vm.moduloSelect=res;
+			
+		},function(err){
+			
+			
+		});
 		
 		
 	}
+	
+	
+	vm.objetoEspacio = function(){
+		
+		Espacios.seleccionarId(vm.idEspacio).then(function(res){
+			
+			vm.espacioSelect=res;
+			
+		},function(err){
+			
+			
+		});
+		
+		
+	};
+	
+	vm.objetoCodigoIr = function(){
+	
+	
+	
+		
+	};
+	
 	
 	$ionicModal.fromTemplateUrl('dispositivoAlta/seleccionarModulo.html', {
     scope: $scope,
@@ -575,6 +594,23 @@ var vm = this;
   $scope.seleccionarModulo = function (item) {
 	  
 	  vm.moduloSelect = item;
+	  vm.idModulo=item.id;
+	  
+	  
+  }
+  
+  
+  $ionicModal.fromTemplateUrl('dispositivoAlta/seleccionarEspacio.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modalSeleccionarEspacio = modal;
+  });
+  
+  $scope.seleccionarEspacio = function (item) {
+	  
+	  vm.espacioSelect = item;
+	  vm.idEspacio=item.id;
 	  
 	  
   }
@@ -582,6 +618,12 @@ var vm = this;
   vm.abrirModalModulo = function () {
 	  
 	  $scope.modalSeleccionarModulo.show();
+	  
+  }
+  
+  vm.abrirModalEspacio = function () {
+	  
+	  $scope.modalSeleccionarEspacio.show();
 	  
   }
 	
@@ -623,6 +665,8 @@ var vm = this;
 			}
 			else
 			{
+				
+				
 				Dispositivos.actualizar(vm.id, vm.nombre, vm.descripcion, vm.idEspacio, vm.urlImagen, vm.idModulo,vm.entradaModulo).then(function(res){
 				
 				$ionicHistory.goBack();
@@ -642,12 +686,12 @@ var vm = this;
 		
 		
 		Espacios.lista().then(function(res){
-		vm.lista = res;
+			$scope.listaEspacios = res;
+		
 		
 	});
 
 	Modulos.lista().then(function(res){
-		vm.listaModulos = res;
 		$scope.listaModulos = res;
 		
 	});
@@ -660,37 +704,55 @@ var vm = this;
 			vm.descripcion = undefined;
 			vm.urlImagen = './img/ionic.png';
 			vm.idEspacio = undefined;
+			vm.espacioSelect = undefined;
 			vm.idModulo = undefined;
 			vm.moduloSelect = undefined;
 			vm.entradaModulo = undefined;
 			vm.descImagen= undefined;
 			vm.codImagen= undefined;
+			vm.idCodigoIr= undefined;
 		}
 		else
 		{
-			
-			var ObjetoId =Dispositivos.seleccionarId($stateParams.id)
-			
-			
-					
+			var ObjetoId
+			 Dispositivos.seleccionarId($stateParams.id).then(function(res){
+			ObjetoId=res;
 			vm.nombre = ObjetoId.nombre;
 			vm.descripcion = ObjetoId.descripcion;
 			vm.idEspacio = undefined;
+			vm.espacioSelect = undefined;
 			vm.urlImagen = ObjetoId.urlImagen;
 			vm.descImagen= ObjetoId.descImagen;
 			vm.codImagen= ObjetoId.codImagen;
 			vm.idModulo= undefined;
+			vm.moduloSelect = undefined;
 			vm.entradaModulo= undefined;
+			vm.idCodigoIr= undefined;
 			vm.id = ObjetoId.id;
 			
+			
+			
 			if(ObjetoId.idEspacio)
-			vm.idEspacio= ObjetoId.idEspacio.toString();
+			vm.idEspacio= ObjetoId.idEspacio;
+			vm.objetoEspacio();
 			if(ObjetoId.idModulo){
-			vm.idModulo= ObjetoId.idModulo.toString();
+			vm.idModulo= ObjetoId.idModulo;
 			vm.objetoModulo();
+			}
+			if(ObjetoId.idCodigoIr){
+			vm.idCodigoIr= ObjetoId.idCodigoIr;
+			vm.objetoCodigoIr();
 			}
 			if(ObjetoId.entradaModulo)	
 			vm.entradaModulo= ObjetoId.entradaModulo.toString();
+			
+			
+				 
+				 
+			 },function(err){})
+			
+			
+					
 			
 			
 			//$stateParams.parametros = undefined;	

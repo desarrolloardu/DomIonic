@@ -206,14 +206,42 @@ function actualizarLista () {
 			
 			
 	seleccionarId: function(id) {
+			var listaTemp;
+			var q = $q.defer();
+				
+			if(lista) {	
 			
-			var listaTemp = lista.filter(function(elem){
+			listaTemp = lista.filter(function(elem){
+				
+				return elem.id == id
+				
+			})
+			q.resolve(listaTemp[0])
+			
+			} else {
+				
+				actualizarLista().then(function(){
+				
+				listaTemp = lista.filter(function(elem){
 				
 				return elem.id == id
 				
 			})
 			
-			return listaTemp[0];
+			q.resolve(listaTemp[0])
+			
+				
+			},function(err){
+				
+				q.reject(err)
+				
+			});
+				
+				
+				
+			}
+			
+			return q.promise;
 			
 		}
 			
@@ -455,14 +483,42 @@ function actualizarLista () {
 			
 			
 			seleccionarId: function(id) {
+			var listaTemp;
+			var q = $q.defer();
+				
+			if(lista) {	
 			
-			var listaTemp = lista.filter(function(elem){
+			listaTemp = lista.filter(function(elem){
+				
+				return elem.id == id
+				
+			})
+			q.resolve(listaTemp[0])
+			
+			} else {
+				
+				actualizarLista().then(function(){
+				
+				listaTemp = lista.filter(function(elem){
 				
 				return elem.id == id
 				
 			})
 			
-			return listaTemp[0];
+			q.resolve(listaTemp[0])
+			
+				
+			},function(err){
+				
+				q.reject(err)
+				
+			});
+				
+				
+				
+			}
+			
+			return q.promise;
 			
 		},
 			
@@ -526,7 +582,7 @@ function actualizarLista () {
 			var respuesta = [];
 		//	var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.idModulo, d.entradaModulo, m.descripcion as moduloDescripcion FROM dispositivos d INNER JOIN modulos m ON d.idModulo = m.id";
 		//	var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.idModulo, d.entradaModulo FROM dispositivos d";
-			var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.entradaModulo,d.idModulo, m.uuid, m.clave, m.descripcion, m.idModuloTipo FROM dispositivos d LEFT OUTER JOIN modulos m ON d.idModulo = m.id  ";
+			var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.entradaModulo,d.idModulo,d.idCodigoIr, m.uuid, m.clave, m.descripcion AS moduloDescripccion, m.idModuloTipo FROM dispositivos d LEFT OUTER JOIN modulos m ON d.idModulo = m.id  ";
 		
 			$cordovaSQLite.execute(db, query)
 			.then(
@@ -569,10 +625,10 @@ function actualizarLista () {
 		
 		actualizarLista:actualizarLista,
 		
-		insertar: function(nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo){
+		insertar: function(nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo,idCodigoIr){
 			var q = $q.defer();
-			var query = "INSERT INTO dispositivos (nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo) VALUES (?,?,?,?,?,?)";
-			$cordovaSQLite.execute(db, query, [nombre, descripcion, idEspacio, urlImagen, idModulo, entradaModulo])
+			var query = "INSERT INTO dispositivos (nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo,idCodigoIr) VALUES (?,?,?,?,?,?,?)";
+			$cordovaSQLite.execute(db, query, [nombre, descripcion, idEspacio, urlImagen, idModulo, entradaModulo,idCodigoIr])
 			.then(
 					function(res) {
 							
@@ -595,11 +651,11 @@ function actualizarLista () {
 			return q.promise;
 		},
 
-		actualizar: function(id, nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo){
-
+		actualizar: function(id, nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo,idCodigoIr){
+			
 			var q = $q.defer();
-			var query = "UPDATE dispositivos SET nombre = ?, descripcion = ?, idEspacio = ?, urlImagen = ?,idModulo = ?, entradaModulo = ? WHERE id = ?";
-			$cordovaSQLite.execute(db, query, [nombre, descripcion, idEspacio, urlImagen, idModulo, entradaModulo, id])
+			var query = "UPDATE dispositivos SET nombre = ?, descripcion = ?, idEspacio = ?, urlImagen = ?,idModulo = ?, entradaModulo = ?,idCodigoIr = ? WHERE id = ?";
+			$cordovaSQLite.execute(db, query, [nombre, descripcion, idEspacio, urlImagen, idModulo, entradaModulo,idCodigoIr, id])
 			.then(
 					function(res) {
 							
@@ -675,14 +731,42 @@ function actualizarLista () {
 		
 		
 		seleccionarId: function(id) {
+			var listaTemp;
+			var q = $q.defer();
+				
+			if(lista) {	
 			
-			var listaTemp = lista.filter(function(elem){
+			listaTemp = lista.filter(function(elem){
+				
+				return elem.id == id
+				
+			})
+			q.resolve(listaTemp[0])
+			
+			} else {
+				
+				actualizarLista().then(function(){
+				
+				listaTemp = lista.filter(function(elem){
 				
 				return elem.id == id
 				
 			})
 			
-			return listaTemp[0];
+			q.resolve(listaTemp[0])
+			
+				
+			},function(err){
+				
+				q.reject(err)
+				
+			});
+				
+				
+				
+			}
+			
+			return q.promise;
 			
 		},
 		
@@ -1371,7 +1455,7 @@ function actualizarLista () {
 	function(res) {
 		
 		
-		$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS dispositivos (id integer primary key AUTOINCREMENT, nombre text, descripcion text, idEspacio int, urlImagen text, idModulo  int, entradaModulo int)").then(
+		$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS dispositivos (id integer primary key AUTOINCREMENT, nombre text, descripcion text, idEspacio int, urlImagen text, idModulo  int, entradaModulo int,idCodigoIr int)").then(
 	
 	function(res) {
 
