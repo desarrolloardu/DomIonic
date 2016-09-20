@@ -780,23 +780,25 @@ function actualizarLista () {
 										}
 
 									//	alert("i: " + i);
-										var a = 0;	
-										var arrayFuncionesIrSelecto = [];
-										while(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
+										if(i<arrayfuncionesIr.length)
 										{
-											arrayFuncionesIrSelecto[a] = arrayfuncionesIr[i];
-											a++;
-											i++;
-										}
+											var a = 0;	
+											var arrayFuncionesIrSelecto = [];
+											while(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
+											{
+												arrayFuncionesIrSelecto[a] = arrayfuncionesIr[i];
+												a++;
+												i++;
+											}
+										
+											//alert("arrayfuncionesIr: " + arrayfuncionesIr.length + " arrayFuncionesIrSelecto: " + arrayFuncionesIrSelecto.length);									
+											// fin selecciono solo las funciones del idDispositivoIr
+											//alert("id: " + arrayFuncionesIrSelecto[0][0] + "fun: " + arrayFuncionesIrSelecto[0][1] + "cod: " + arrayFuncionesIrSelecto[0][2]);
+											//alert("id: " + arrayFuncionesIrSelecto[1][0] + "fun: " + arrayFuncionesIrSelecto[1][1] + "cod: " + arrayFuncionesIrSelecto[1][2]);
 
-										//alert("arrayfuncionesIr: " + arrayfuncionesIr.length + " arrayFuncionesIrSelecto: " + arrayFuncionesIrSelecto.length);									
-										// fin selecciono solo las funciones del idDispositivoIr
-										//alert("id: " + arrayFuncionesIrSelecto[0][0] + "fun: " + arrayFuncionesIrSelecto[0][1] + "cod: " + arrayFuncionesIrSelecto[0][2]);
-										//alert("id: " + arrayFuncionesIrSelecto[1][0] + "fun: " + arrayFuncionesIrSelecto[1][1] + "cod: " + arrayFuncionesIrSelecto[1][2]);
-
-									//	alert("leyo OK el archivo, ahora insertara");
-										insertFuncionIr(arrayFuncionesIrSelecto,0,function(res3){
-										//insertDispositivoIr(arrayIr,0,function(res){
+											//	alert("leyo OK el archivo, ahora insertara");
+											insertFuncionIr(arrayFuncionesIrSelecto,0,function(res3){
+											//insertDispositivoIr(arrayIr,0,function(res){
 											//	alert("insertarmasivo alert5");
 											//actualizarLista().then(function(res){
 											//	alert("insertarmasivo alert6");
@@ -809,11 +811,12 @@ function actualizarLista () {
 											q.reject(err);	
 												
 											})	*/
-										},function(err){
-											
-											$cordovaToast.show("ERROR insertar funciones ", 'long', 'center');
-											q.reject(err);
-										})
+											},function(err){
+												
+												$cordovaToast.show("ERROR insertar funciones ", 'long', 'center');
+												q.reject(err);
+											})
+										}
 									})
 									.error(function(err){
 										$cordovaToast.show("ERROR al leer archivo funcionesIr", 'long', 'center');
@@ -874,24 +877,27 @@ function actualizarLista () {
 													break;
 											}
 
-											var a = 0;	
-											var arrayFuncionesIrSelecto = [];
-											while(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
+											if(i<arrayfuncionesIr.length)
 											{
-												arrayFuncionesIrSelecto[a] = arrayfuncionesIr[i];
-												a++;
-												i++;
+												var a = 0;	
+												var arrayFuncionesIrSelecto = [];
+												while(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
+												{
+													arrayFuncionesIrSelecto[a] = arrayfuncionesIr[i];
+													a++;
+													i++;
+												}
+												// fin selecciono solo las funciones del idDispositivoIr
+
+												insertFuncionIr(arrayFuncionesIrSelecto,0,function(res3){
+																		q.resolve();
+
+												},function(err){
+													
+													$cordovaToast.show("ERROR insertar funciones ", 'long', 'center');
+													q.reject(err);
+												})
 											}
-											// fin selecciono solo las funciones del idDispositivoIr
-
-											insertFuncionIr(arrayFuncionesIrSelecto,0,function(res3){
-																	q.resolve();
-
-											},function(err){
-												
-												$cordovaToast.show("ERROR insertar funciones ", 'long', 'center');
-												q.reject(err);
-											})
 										})
 										.error(function(err){
 											$cordovaToast.show("ERROR al leer archivo funcionesIr", 'long', 'center');
