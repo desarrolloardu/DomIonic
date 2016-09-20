@@ -745,6 +745,7 @@ function actualizarLista () {
 		actualizarLista:actualizarLista,
 		
 		insertar: function(nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo,idDispositivoIr){
+		
 			var q = $q.defer();
 			var query = "INSERT INTO dispositivos (nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo,idDispositivoIr) VALUES (?,?,?,?,?,?,?)";
 			$cordovaSQLite.execute(db, query, [nombre, descripcion, idEspacio, urlImagen, idModulo, entradaModulo,idDispositivoIr])
@@ -840,7 +841,7 @@ function actualizarLista () {
 						
 						},
 					function (err) {
-						$cordovaToast.show("ERROR INSERT", 'long', 'center');
+						$cordovaToast.show("ERROR INSERT Dispositivos", 'long', 'center');
 						q.reject(err);
 						}
 				)
@@ -1306,6 +1307,46 @@ function actualizarLista () {
 					)
 				return q.promise;
 			},
+			
+			seleccionarId: function(id) {
+			var listaTemp;
+			var q = $q.defer();
+				
+			if(lista) {	
+			
+			listaTemp = lista.filter(function(elem){
+				
+				return elem.id == id
+				
+			})
+			q.resolve(listaTemp[0])
+			
+			} else {
+				
+				actualizarLista().then(function(){
+				
+				listaTemp = lista.filter(function(elem){
+				
+				return elem.id == id
+				
+			})
+			
+			q.resolve(listaTemp[0])
+			
+				
+			},function(err){
+				
+				q.reject(err)
+				
+			});
+				
+				
+				
+			}
+			
+			return q.promise;
+			
+		},
 
 			insertarMasivo: function(){
 				

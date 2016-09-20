@@ -584,7 +584,19 @@ var vm = this;
 	
 	vm.objetoDispositivoIr = function(){
 	
-	alert(vm.idDispositivoIr);
+	IR.seleccionarId(vm.idDispositivoIr).then(function(res){
+		vm.dispositivoIrSelect.tipo=res.tipo;
+		vm.dispositivoIrSelect.marca=res.marca;
+		vm.dispositivoIrSelect.modelo=res.modelo;
+		
+		IR.filtrarTablaDispositivoIr(res.tipo,res.marca,res.modelo).then(function(res){
+					$scope.listaDispositivoIr = res;
+					
+					
+			},function(err){})
+		
+		
+	},function(err){});
 	
 		
 	};
@@ -850,6 +862,11 @@ var vm = this;
 			if(ObjetoId.idDispositivoIr){
 			vm.idDispositivoIr= ObjetoId.idDispositivoIr;
 			vm.objetoDispositivoIr();
+			}else{
+				IR.filtrarTablaDispositivoIr().then(function(res){
+					$scope.listaDispositivoIr = res;
+			},function(err){})
+				
 			}
 			if(ObjetoId.entradaModulo)	
 			vm.entradaModulo= ObjetoId.entradaModulo.toString();
