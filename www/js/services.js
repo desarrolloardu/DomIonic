@@ -568,7 +568,7 @@ function actualizarLista () {
 
 
 
-.factory("Dispositivos", ['$cordovaSQLite', '$cordovaToast', '$rootScope', '$q','FactoryDB', 'Espacios','Modulos', function($cordovaSQLite, $cordovaToast, $rootScope, $q, FactoryDB, Espacios,Modulos){
+.factory("Dispositivos", ['$cordovaSQLite', '$cordovaToast', '$rootScope', '$q','FactoryDB', 'Espacios','Modulos', 'IR', '$cordovaFile', '$http', function($cordovaSQLite, $cordovaToast, $rootScope, $q, FactoryDB, Espacios, Modulos, IR, $cordovaFile, $http){
 	var lista;
 	var db = null;
 	db=FactoryDB.punteroDb();
@@ -611,7 +611,126 @@ function actualizarLista () {
 				)
 			return q.promise;
 			
-			};
+			}
+
+	function insertFuncionIr  (arrayCod,indexActual,callback,calbackErr) {
+
+	//	alert("insertFuncionIr, arrayCod.length: " + arrayCod.length);
+	//	alert("id: " + arrayCod[indexActual][0] + "fun: " + arrayCod[indexActual][1] + "cod: " + arrayCod[indexActual][2]);
+		var indexTotal = arrayCod.length - 1;
+
+
+
+		var query = "INSERT INTO funcionesIr (idDispositivoIr, funcion, codigo) VALUES (?,?,?)";
+						
+		$cordovaSQLite.execute(db, query, [arrayCod[indexActual][0], arrayCod[indexActual][1], arrayCod[indexActual][2]])
+		.then(
+				function(res) {
+					
+						if(indexActual < indexTotal){
+							
+							insertFuncionIr(arrayCod,indexActual+1,callback)
+							
+						} else {
+							
+							callback();
+							
+						}
+						
+					},
+				function (err) {
+					$cordovaToast.show("ERROR insertFuncionIr", 'long', 'center');
+					callbackErr()
+					}
+					
+					)
+
+	} 
+
+	function CSVToArray( strData, strDelimiter ){
+
+		alert("CSVToArray");
+         // Check to see if the delimiter is defined. If not,
+         // then default to comma.
+         strDelimiter = (strDelimiter || ",");
+ 
+         // Create a regular expression to parse the CSV values.
+         var objPattern = new RegExp(
+             (
+                 // Delimiters.
+                 "(\\" + strDelimiter + "|\\r?\\n|\\r|^)" +
+ 
+                 // Quoted fields.
+                 "(?:\"([^\"]*(?:\"\"[^\"]*)*)\"|" +
+ 
+                 // Standard fields.
+                 "([^\"\\" + strDelimiter + "\\r\\n]*))"
+             ),
+             "gi"
+             );
+ 
+ 
+         // Create an array to hold our data. Give the array
+         // a default empty first row.
+         var arrData = [[]];
+ 
+         // Create an array to hold our individual pattern
+         // matching groups.
+         var arrMatches = null;
+ 
+ 
+         // Keep looping over the regular expression matches
+         // until we can no longer find a match.
+         while (arrMatches = objPattern.exec( strData )){
+ 
+             // Get the delimiter that was found.
+             var strMatchedDelimiter = arrMatches[ 1 ];
+ 
+             // Check to see if the given delimiter has a length
+             // (is not the start of string) and if it matches
+             // field delimiter. If id does not, then we know
+             // that this delimiter is a row delimiter.
+             if (
+                 strMatchedDelimiter.length &&
+                 strMatchedDelimiter !== strDelimiter
+                 ){
+ 
+                 // Since we have reached a new row of data,
+                 // add an empty row to our data array.
+                 arrData.push( [] );
+ 
+             }
+ 
+             var strMatchedValue;
+ 
+             // Now that we have our delimiter out of the way,
+             // let's check to see which kind of value we
+             // captured (quoted or unquoted).
+             if (arrMatches[ 2 ]){
+ 
+                 // We found a quoted value. When we capture
+                 // this value, unescape any double quotes.
+                 strMatchedValue = arrMatches[ 2 ].replace(
+                     new RegExp( "\"\"", "g" ),
+                     "\""
+                     );
+ 
+             } else {
+ 
+                 // We found a non-quoted value.
+                 strMatchedValue = arrMatches[ 3 ];
+ 
+             }
+ 
+ 
+             // Now that we have our value string, let's add
+             // it to the data array.
+             arrData[ arrData.length - 1 ].push( strMatchedValue );
+         }
+ 
+         // Return the parsed data.
+         return( arrData );
+     };	
 			
 			
 	$rootScope.$on('actualizarLista:Dispositivos',function(){
@@ -632,6 +751,76 @@ function actualizarLista () {
 			.then(
 					function(res) {
 							
+						//	alert("llama a existenFuncionesIR con idDispositivoIr: " + idDispositivoIr);
+							//verificar si los codigos existen en la tabla, sino crearlos desde el .csv
+							IR.existenFuncionesIR(idDispositivoIr).then(function(res){
+
+							//alert("existenFuncionesIr: " + res);
+
+							if(res == 0)
+							{
+								//cargo los datos desde el .csv
+
+								//$cordovaFile.checkFile(cordova.file.applicationStorageDirectory, 'modelosIr.csv').then(function(res){
+								$http.get('funcionesIr.csv').success(function(res2) {
+
+								//	alert("va a leer el archivo");
+									var arrayfuncionesIr = CSVToArray(res2,";");
+									
+									//selecciono solo las funciones del idDispositivoIr
+									var i = 0;
+									
+									for(i=0; i<=arrayfuncionesIr.length; i++)
+									{
+									//	alert("i: " + i + " arrayfuncionesIr[i][0]: " + arrayfuncionesIr[i][0] + " - idDispositivoIr:" + idDispositivoIr);
+										if(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
+											break;
+									}
+
+								//	alert("i: " + i);
+									var a = 0;	
+									var arrayFuncionesIrSelecto = [];
+									while(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
+									{
+										arrayFuncionesIrSelecto[a] = arrayfuncionesIr[i];
+										a++;
+										i++;
+									}
+
+									//alert("arrayfuncionesIr: " + arrayfuncionesIr.length + " arrayFuncionesIrSelecto: " + arrayFuncionesIrSelecto.length);									
+									// fin selecciono solo las funciones del idDispositivoIr
+									//alert("id: " + arrayFuncionesIrSelecto[0][0] + "fun: " + arrayFuncionesIrSelecto[0][1] + "cod: " + arrayFuncionesIrSelecto[0][2]);
+									//alert("id: " + arrayFuncionesIrSelecto[1][0] + "fun: " + arrayFuncionesIrSelecto[1][1] + "cod: " + arrayFuncionesIrSelecto[1][2]);
+
+								//	alert("leyo OK el archivo, ahora insertara");
+									insertFuncionIr(arrayFuncionesIrSelecto,0,function(res3){
+									//insertDispositivoIr(arrayIr,0,function(res){
+										//	alert("insertarmasivo alert5");
+										//actualizarLista().then(function(res){
+										//	alert("insertarmasivo alert6");
+											//$cordovaFile.createFile(cordova.file.applicationStorageDirectory, 'modelosIr.csv', true)
+										q.resolve();
+											
+										/*	
+										},function(err){
+											$cordovaToast.show("ERROR actualizar lista", 'long', 'center');
+										q.reject(err);	
+											
+										})	*/
+									},function(err){
+										
+										$cordovaToast.show("ERROR insertar funciones ", 'long', 'center');
+										q.reject(err);
+									})
+								})
+								.error(function(err){
+									$cordovaToast.show("ERROR al leer archivo funcionesIr", 'long', 'center');
+									q.reject(err);
+									
+								})
+
+							}
+
 							actualizarLista().then(function(res){
 									
 								var lista=res;	
@@ -641,7 +830,7 @@ function actualizarLista () {
 									
 									q.reject(err);		
 								})		
-							
+							})	
 						},
 					function (err) {
 						$cordovaToast.show("ERROR INSERT", 'long', 'center');
@@ -658,6 +847,55 @@ function actualizarLista () {
 			$cordovaSQLite.execute(db, query, [nombre, descripcion, idEspacio, urlImagen, idModulo, entradaModulo,idDispositivoIr, id])
 			.then(
 					function(res) {
+
+
+							IR.existenFuncionesIR(idDispositivoIr).then(function(res){
+
+							//alert("existenFuncionesIr: " + res);
+
+							if(res == 0)
+							{
+								//cargo los datos desde el .csv
+								$http.get('funcionesIr.csv').success(function(res2) {
+
+									var arrayfuncionesIr = CSVToArray(res2,";");
+									
+									//selecciono solo las funciones del idDispositivoIr
+									var i = 0;
+									
+									for(i=0; i<=arrayfuncionesIr.length; i++)
+									{
+											if(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
+											break;
+									}
+
+									var a = 0;	
+									var arrayFuncionesIrSelecto = [];
+									while(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
+									{
+										arrayFuncionesIrSelecto[a] = arrayfuncionesIr[i];
+										a++;
+										i++;
+									}
+									// fin selecciono solo las funciones del idDispositivoIr
+
+									insertFuncionIr(arrayFuncionesIrSelecto,0,function(res3){
+															q.resolve();
+
+									},function(err){
+										
+										$cordovaToast.show("ERROR insertar funciones ", 'long', 'center');
+										q.reject(err);
+									})
+								})
+								.error(function(err){
+									$cordovaToast.show("ERROR al leer archivo funcionesIr", 'long', 'center');
+									q.reject(err);
+									
+								})
+
+							}
+
 							
 							actualizarLista().then(function(res){
 									
@@ -668,7 +906,7 @@ function actualizarLista () {
 									
 									q.reject(err);		
 								})		
-							
+							})
 						},
 					function (err) {
 						$cordovaToast.show(err, 'long', 'center');
@@ -1062,47 +1300,14 @@ function actualizarLista () {
 				
 				
 				var q = $q.defer();
-				/*var query = "INSERT INTO dispositivoIr (tipo, marca, modelo, funcion, codigo) VALUES (?,?,?,?,?)";
-				$cordovaSQLite.execute(db, query, [tipo, marca, modelo, funcion, codigo])
-				.then(
-						function(res) {
-								actualizarLista().then(function(res){
-									
-								var lista=res;	
-								q.resolve(res);	
-									
-								},function(err){
-									
-									q.reject(err);		
-								})	
-								
-							},
-						function (err) {
-							$cordovaToast.show("ERROR INSERT", 'long', 'center');
-							q.reject(err);
-							}
-					)*/
-					
-					
-					
-		
-			/*	$http.get('test.csv').success(function(res) {
-					var arrayIr = CSVToArray(res,";");
-					q.resolve(arrayIr)
-					
-				}) */
-				
-				
-				
-				
-				
+
 				$cordovaFile.checkFile(cordova.file.applicationStorageDirectory, 'modelosIr.csv').then(function(res){
 					
 					q.resolve();
 					
 				},function(err){
 					
-					
+					 
 							$http.get('modelosIr.csv').success(function(res) {
 							var arrayIr = CSVToArray(res,";");
 							//alert("insertarmasivo length: " + arrayIr.length);
@@ -1201,6 +1406,33 @@ function actualizarLista () {
 								
 								
 								
+				return q.promise;
+			},
+
+
+			existenFuncionesIR: function(idDispositivoIr){
+				
+				var q = $q.defer();
+
+
+				var query = "SELECT * FROM funcionesIr WHERE idDispositivoIr = ?";
+				//alert("db: " + db);
+				$cordovaSQLite.execute(db, query, [idDispositivoIr])
+				.then(
+						function(res) {				
+							//	var lista=res;
+							//	alert("res.rows.length: " + res.rows.length);
+								if(res.rows.length >= 1)
+									q.resolve(1);	
+								else
+									q.resolve(0);									
+							},
+						function (err) {
+							$cordovaToast.show("ERROR INSERT", 'long', 'center');
+						//	alert("entro a err");
+							q.resolve(0);
+							}
+					)
 				return q.promise;
 			},
 			
@@ -1527,7 +1759,7 @@ function actualizarLista () {
 	function(res) {
 		
 		
-		$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS dispositivos (id integer primary key AUTOINCREMENT, nombre text, descripcion text, idEspacio int, urlImagen text, idModulo  int, entradaModulo int,idDispositivoIr int)").then(
+		$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS dispositivos (id integer primary key AUTOINCREMENT, nombre text, descripcion text, idEspacio int, urlImagen text, idModulo  int, entradaModulo int, idDispositivoIr int)").then(
 	
 	function(res) {
 
@@ -1535,7 +1767,7 @@ function actualizarLista () {
 
 	function(res) {	
 		
-					$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS funcionesIr (id integer primary key AUTOINCREMENT, idCodigo , tipo text, marca text, modelo text)").then(
+					$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS funcionesIr (id integer primary key AUTOINCREMENT, idDispositivoIr int, funcion text, codigo text)").then(
 	
 	function(res) {	
 
