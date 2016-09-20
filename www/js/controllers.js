@@ -542,9 +542,10 @@ var vm = this;
 
 })
 
-.controller('DispositivoAltaCtrl', function($scope,$ionicModal,$ionicPlatform,Dispositivos, Espacios, Modulos,Imagenes, $state, $stateParams,$ionicHistory) {
+.controller('DispositivoAltaCtrl', function($scope,$ionicModal,$ionicPlatform,$ionicScrollDelegate,Dispositivos, Espacios, Modulos,Imagenes, $state, $stateParams,$ionicHistory,IR) {
 
 	var vm = this;
+	vm.dispositivoIrSelect={};
 	
 	
 	vm.back= function () {
@@ -556,7 +557,7 @@ var vm = this;
 		Modulos.seleccionarId(vm.idModulo).then(function(res){
 			
 			vm.moduloSelect=res;
-			alert(res.idModuloTipo);
+			
 			
 		},function(err){
 			
@@ -583,10 +584,17 @@ var vm = this;
 	
 	vm.objetoDispositivoIr = function(){
 	
-	
+	alert(vm.idDispositivoIr);
 	
 		
 	};
+	
+	$ionicModal.fromTemplateUrl('templates/my_modal_imagenes.html', {
+    scope: $scope,
+    animation: 'slide-in-up'
+  }).then(function(modal) {
+    $scope.modalImagenes = modal;
+  });
 	
 	
 	$ionicModal.fromTemplateUrl('dispositivoAlta/seleccionarModulo.html', {
@@ -596,13 +604,7 @@ var vm = this;
     $scope.modalSeleccionarModulo = modal;
   });
   
-  $scope.seleccionarModulo = function (item) {
-	  
-	  vm.moduloSelect = item;
-	  vm.idModulo=item.id;
-	  
-	  
-  }
+ 
   
   
   $ionicModal.fromTemplateUrl('dispositivoAlta/seleccionarEspacio.html', {
@@ -634,7 +636,17 @@ var vm = this;
     $scope.modalSeleccionarModeloIr = modal;
   });
   
-  
+  $scope.imagenes=Imagenes.dispositivos();
+	
+	$scope.seleccionarImagen = function(imagen){
+		
+		vm.urlImagen=imagen.urlImagen;
+		vm.descImagen=imagen.desc;
+		vm.codImagen=imagen.cod;
+	$scope.modalImagenes.hide();	
+		
+		
+	}
   
   
   $scope.seleccionarEspacio = function (item) {
@@ -642,8 +654,58 @@ var vm = this;
 	  vm.espacioSelect = item;
 	  vm.idEspacio=item.id;
 	  
+	 $scope.modalSeleccionarEspacio.hide(); 
+  }
+  
+   $scope.seleccionarModulo = function (item) {
+	  
+	  vm.moduloSelect = item;
+	  vm.idModulo=item.id;
+	  $ionicScrollDelegate.resize();
+	  $scope.modalSeleccionarModulo.hide();
+  }
+  
+  $scope.seleccionarDispositivoIrTipo = function (item) {
+	  
+	  if(item != vm.dispositivoIrSelect.tipo) {
+	  vm.dispositivoIrSelect.tipo = item;
+	   vm.dispositivoIrSelect.marca = undefined;
+	   vm.dispositivoIrSelect.modelo = undefined;
+	  IR.filtrarTablaDispositivoIr(vm.dispositivoIrSelect.tipo).then(function(res){
+					$scope.listaDispositivoIr = res;
+			},function(err){})
+	  
+	  }
+	  $scope.modalSeleccionarTipoIr.hide();
+	  
+  };
+  
+   $scope.seleccionarDispositivoIrMarca = function (item) {
+	  if(item != vm.dispositivoIrSelect.marca) {
+	   vm.dispositivoIrSelect.marca = item;
+	    vm.dispositivoIrSelect.modelo = undefined;
+	  IR.filtrarTablaDispositivoIr(vm.dispositivoIrSelect.tipo,vm.dispositivoIrSelect.marca).then(function(res){
+					$scope.listaDispositivoIr = res;
+			},function(err){})
+	  
+	  }
+	   $scope.modalSeleccionarMarcaIr.hide();
+  };
+  
+   $scope.seleccionarDispositivoIrModelo = function (item) {
+	  if(item != vm.dispositivoIrSelect.modelo){ 
+	  vm.dispositivoIrSelect.modelo = item;
+	  alert(vm.dispositivoIrSelect.modelo),
+	    IR.filtrarTablaDispositivoIr(vm.dispositivoIrSelect.tipo,vm.dispositivoIrSelect.marca,vm.dispositivoIrSelect.modelo).then(function(res){
+					$scope.listaDispositivoIr = res;
+					vm.idDispositivoIr=res.idDispositivoIr;
+			},function(err){})
+	  
+	  }
+	  $scope.modalSeleccionarModeloIr.hide();
 	  
   }
+  
   
   vm.abrirModalModulo = function () {
 	  
@@ -679,26 +741,11 @@ var vm = this;
   
 	
 	
-	$ionicModal.fromTemplateUrl('templates/my_modal_imagenes.html', {
-    scope: $scope,
-    animation: 'slide-in-up'
-  }).then(function(modal) {
-    $scope.modalImagenes = modal;
-  });
+	
   
   
 	
-	$scope.imagenes=Imagenes.dispositivos();
 	
-	$scope.seleccionarImagen = function(imagen){
-		
-		vm.urlImagen=imagen.urlImagen;
-		vm.descImagen=imagen.desc;
-		vm.codImagen=imagen.cod;
-	$scope.modalImagenes.hide();	
-		
-		
-	}
 	
 	
 	vm.urlImagen = "./img/ionic.png";
@@ -708,7 +755,7 @@ var vm = this;
 		
 			if(!$stateParams.id)
 			{
-				Dispositivos.insertar(vm.nombre, vm.descripcion, vm.idEspacio, vm.urlImagen, vm.idModulo,vm.entradaModulo).then(function(res){
+				Dispositivos.insertar(vm.nombre, vm.descripcion, vm.idEspacio, vm.urlImagen, vm.idModulo,vm.entradaModulo,vm.idDispositivoIr).then(function(res){
 				
 				$ionicHistory.goBack();
 				
@@ -718,7 +765,7 @@ var vm = this;
 			{
 				
 				
-				Dispositivos.actualizar(vm.id, vm.nombre, vm.descripcion, vm.idEspacio, vm.urlImagen, vm.idModulo,vm.entradaModulo).then(function(res){
+				Dispositivos.actualizar(vm.id, vm.nombre, vm.descripcion, vm.idEspacio, vm.urlImagen, vm.idModulo,vm.entradaModulo,vm.idDispositivoIr).then(function(res){
 				
 				$ionicHistory.goBack();
 				
@@ -762,7 +809,12 @@ var vm = this;
 			vm.descImagen= undefined;
 			vm.codImagen= undefined;
 			vm.idDispositivoIr= undefined;
-		}
+			
+			IR.filtrarTablaDispositivoIr().then(function(res){
+					$scope.listaDispositivoIr = res;
+			},function(err){})
+			
+			}
 		else
 		{
 			var ObjetoId
@@ -783,6 +835,7 @@ var vm = this;
 			
 			
 			
+			
 			if(ObjetoId.idEspacio)
 			vm.idEspacio= ObjetoId.idEspacio;
 			vm.objetoEspacio();
@@ -792,7 +845,7 @@ var vm = this;
 			}
 			if(ObjetoId.idDispositivoIr){
 			vm.idDispositivoIr= ObjetoId.idDispositivoIr;
-			vm.objetoDispositivoIrr();
+			vm.objetoDispositivoIr();
 			}
 			if(ObjetoId.entradaModulo)	
 			vm.entradaModulo= ObjetoId.entradaModulo.toString();

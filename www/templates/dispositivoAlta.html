@@ -34,16 +34,7 @@
     <input ng-model="di.urlImagen" type="text" placeholder="Imagen">
 	-->
 	
-   <label class="item item-input item-select">
-    <div class="input-label">
-      Espacio
-    </div>
-    <select ng-model="di.idEspacio" >
-	    <option value="">Seleccione</option>
-      <option ng-repeat="es in di.lista" value="{{es.id}}">{{es.descripcion}}</option>
-      
-    </select>
-  </label>
+  
 
   
   
@@ -56,38 +47,40 @@
     </a>
     
      <a  class="item item-icon-right" ng-click="di.abrirModalEspacio()">
-      <p>{{di.espacioSelect.descripcion || 'Seleccione Espacio'}}<br/><span style="color:#A4A4A4">
-        
+      Espacio<span class="item-note">
+      {{di.espacioSelect.descripcion || 'Seleccione'}}  
       </span></p> 
       
       <i class="icon ion-ios-arrow-right"></i>
     </a>
-  
-    <a  class="item item-icon-right" ng-click="di.abrirModalTipoIr()">
-      <p>{{di.TipoIrSelect || 'Seleccione Tipo IR'}}  <br/><span style="color:#A4A4A4">
-        
-      </span></p> 
+      
+      
+      <div ng-show="di.moduloSelect && di.moduloSelect.idModuloTipo == 'IR'">
+    <a  class="item item-icon-right" ng-click="di.abrirModalTipoIr()" >
+       Tipo IR <span class="item-note">
+        {{di.dispositivoIrSelect.tipo || 'Seleccione '}}
+      </span>
       
       <i class="icon ion-ios-arrow-right"></i>
     </a>
     
       <a  class="item item-icon-right" ng-click="di.abrirModalMarcaIr()">
-      <p>{{di.MarcaIrSelect || 'Seleccione Marca '}}  <br/><span style="color:#A4A4A4">
-        
+      <p>Marca<span class="item-note">
+        {{di.dispositivoIrSelect.marca || 'Seleccione'}}  
       </span></p> 
       
       <i class="icon ion-ios-arrow-right"></i>
     </a>
     
       <a  class="item item-icon-right" ng-click="di.abrirModalModeloIr()">
-      <p>{{di.ModeloIrSelect || 'Seleccione Modelo'}}  <br/><span style="color:#A4A4A4">
-        
+      <p>  Modelo<span class="item-note">
+        {{di.dispositivoIrSelect.modelo || 'Seleccione'}}
       </span></p> 
       
       <i class="icon ion-ios-arrow-right"></i>
     </a>
 
-
+      </div>
   <label class="item item-input item-select">
     <div class="input-label">
       Entrada
