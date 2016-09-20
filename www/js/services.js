@@ -649,7 +649,7 @@ function actualizarLista () {
 
 	function CSVToArray( strData, strDelimiter ){
 
-		alert("CSVToArray");
+		//alert("CSVToArray");
          // Check to see if the delimiter is defined. If not,
          // then default to comma.
          strDelimiter = (strDelimiter || ",");
@@ -750,77 +750,80 @@ function actualizarLista () {
 			$cordovaSQLite.execute(db, query, [nombre, descripcion, idEspacio, urlImagen, idModulo, entradaModulo,idDispositivoIr])
 			.then(
 					function(res) {
-							
-						//	alert("llama a existenFuncionesIR con idDispositivoIr: " + idDispositivoIr);
-							//verificar si los codigos existen en la tabla, sino crearlos desde el .csv
-							IR.existenFuncionesIR(idDispositivoIr).then(function(res){
+							//alert("idDispositivoIr: " + idDispositivoIr);
+							if(idDispositivoIr)
+							{ //alert("ENTRO!!");
+							//	alert("llama a existenFuncionesIR con idDispositivoIr: " + idDispositivoIr);
+								//verificar si los codigos existen en la tabla, sino crearlos desde el .csv
+								IR.existenFuncionesIR(idDispositivoIr).then(function(res){
 
-							//alert("existenFuncionesIr: " + res);
+								//alert("existenFuncionesIr: " + res);
 
-							if(res == 0)
-							{
-								//cargo los datos desde el .csv
+								if(res == 0)
+								{
+									//cargo los datos desde el .csv
 
-								//$cordovaFile.checkFile(cordova.file.applicationStorageDirectory, 'modelosIr.csv').then(function(res){
-								$http.get('funcionesIr.csv').success(function(res2) {
+									//$cordovaFile.checkFile(cordova.file.applicationStorageDirectory, 'modelosIr.csv').then(function(res){
+									$http.get('funcionesIr.csv').success(function(res2) {
 
-								//	alert("va a leer el archivo");
-									var arrayfuncionesIr = CSVToArray(res2,";");
-									
-									//selecciono solo las funciones del idDispositivoIr
-									var i = 0;
-									
-									for(i=0; i<=arrayfuncionesIr.length; i++)
-									{
-									//	alert("i: " + i + " arrayfuncionesIr[i][0]: " + arrayfuncionesIr[i][0] + " - idDispositivoIr:" + idDispositivoIr);
-										if(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
-											break;
-									}
-
-								//	alert("i: " + i);
-									var a = 0;	
-									var arrayFuncionesIrSelecto = [];
-									while(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
-									{
-										arrayFuncionesIrSelecto[a] = arrayfuncionesIr[i];
-										a++;
-										i++;
-									}
-
-									//alert("arrayfuncionesIr: " + arrayfuncionesIr.length + " arrayFuncionesIrSelecto: " + arrayFuncionesIrSelecto.length);									
-									// fin selecciono solo las funciones del idDispositivoIr
-									//alert("id: " + arrayFuncionesIrSelecto[0][0] + "fun: " + arrayFuncionesIrSelecto[0][1] + "cod: " + arrayFuncionesIrSelecto[0][2]);
-									//alert("id: " + arrayFuncionesIrSelecto[1][0] + "fun: " + arrayFuncionesIrSelecto[1][1] + "cod: " + arrayFuncionesIrSelecto[1][2]);
-
-								//	alert("leyo OK el archivo, ahora insertara");
-									insertFuncionIr(arrayFuncionesIrSelecto,0,function(res3){
-									//insertDispositivoIr(arrayIr,0,function(res){
-										//	alert("insertarmasivo alert5");
-										//actualizarLista().then(function(res){
-										//	alert("insertarmasivo alert6");
-											//$cordovaFile.createFile(cordova.file.applicationStorageDirectory, 'modelosIr.csv', true)
-										q.resolve();
-											
-										/*	
-										},function(err){
-											$cordovaToast.show("ERROR actualizar lista", 'long', 'center');
-										q.reject(err);	
-											
-										})	*/
-									},function(err){
+									//	alert("va a leer el archivo");
+										var arrayfuncionesIr = CSVToArray(res2,";");
 										
-										$cordovaToast.show("ERROR insertar funciones ", 'long', 'center');
-										q.reject(err);
+										//selecciono solo las funciones del idDispositivoIr
+										var i = 0;
+										
+										for(i=0; i<=arrayfuncionesIr.length; i++)
+										{
+										//	alert("i: " + i + " arrayfuncionesIr[i][0]: " + arrayfuncionesIr[i][0] + " - idDispositivoIr:" + idDispositivoIr);
+											if(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
+												break;
+										}
+
+									//	alert("i: " + i);
+										var a = 0;	
+										var arrayFuncionesIrSelecto = [];
+										while(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
+										{
+											arrayFuncionesIrSelecto[a] = arrayfuncionesIr[i];
+											a++;
+											i++;
+										}
+
+										//alert("arrayfuncionesIr: " + arrayfuncionesIr.length + " arrayFuncionesIrSelecto: " + arrayFuncionesIrSelecto.length);									
+										// fin selecciono solo las funciones del idDispositivoIr
+										//alert("id: " + arrayFuncionesIrSelecto[0][0] + "fun: " + arrayFuncionesIrSelecto[0][1] + "cod: " + arrayFuncionesIrSelecto[0][2]);
+										//alert("id: " + arrayFuncionesIrSelecto[1][0] + "fun: " + arrayFuncionesIrSelecto[1][1] + "cod: " + arrayFuncionesIrSelecto[1][2]);
+
+									//	alert("leyo OK el archivo, ahora insertara");
+										insertFuncionIr(arrayFuncionesIrSelecto,0,function(res3){
+										//insertDispositivoIr(arrayIr,0,function(res){
+											//	alert("insertarmasivo alert5");
+											//actualizarLista().then(function(res){
+											//	alert("insertarmasivo alert6");
+												//$cordovaFile.createFile(cordova.file.applicationStorageDirectory, 'modelosIr.csv', true)
+											q.resolve();
+												
+											/*	
+											},function(err){
+												$cordovaToast.show("ERROR actualizar lista", 'long', 'center');
+											q.reject(err);	
+												
+											})	*/
+										},function(err){
+											
+											$cordovaToast.show("ERROR insertar funciones ", 'long', 'center');
+											q.reject(err);
+										})
 									})
-								})
-								.error(function(err){
-									$cordovaToast.show("ERROR al leer archivo funcionesIr", 'long', 'center');
-									q.reject(err);
-									
-								})
+									.error(function(err){
+										$cordovaToast.show("ERROR al leer archivo funcionesIr", 'long', 'center');
+										q.reject(err);
+										
+									})
 
+								}
+								})
 							}
-
 							actualizarLista().then(function(res){
 									
 								var lista=res;	
@@ -830,7 +833,8 @@ function actualizarLista () {
 									
 									q.reject(err);		
 								})		
-							})	
+							
+						
 						},
 					function (err) {
 						$cordovaToast.show("ERROR INSERT", 'long', 'center');
@@ -848,55 +852,56 @@ function actualizarLista () {
 			.then(
 					function(res) {
 
-
-							IR.existenFuncionesIR(idDispositivoIr).then(function(res){
-
-							//alert("existenFuncionesIr: " + res);
-
-							if(res == 0)
+							if(idDispositivoIr)
 							{
-								//cargo los datos desde el .csv
-								$http.get('funcionesIr.csv').success(function(res2) {
+									IR.existenFuncionesIR(idDispositivoIr).then(function(res){
 
-									var arrayfuncionesIr = CSVToArray(res2,";");
-									
-									//selecciono solo las funciones del idDispositivoIr
-									var i = 0;
-									
-									for(i=0; i<=arrayfuncionesIr.length; i++)
+									//alert("existenFuncionesIr: " + res);
+
+									if(res == 0)
 									{
-											if(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
-											break;
+										//cargo los datos desde el .csv
+										$http.get('funcionesIr.csv').success(function(res2) {
+
+											var arrayfuncionesIr = CSVToArray(res2,";");
+											
+											//selecciono solo las funciones del idDispositivoIr
+											var i = 0;
+											
+											for(i=0; i<=arrayfuncionesIr.length; i++)
+											{
+													if(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
+													break;
+											}
+
+											var a = 0;	
+											var arrayFuncionesIrSelecto = [];
+											while(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
+											{
+												arrayFuncionesIrSelecto[a] = arrayfuncionesIr[i];
+												a++;
+												i++;
+											}
+											// fin selecciono solo las funciones del idDispositivoIr
+
+											insertFuncionIr(arrayFuncionesIrSelecto,0,function(res3){
+																	q.resolve();
+
+											},function(err){
+												
+												$cordovaToast.show("ERROR insertar funciones ", 'long', 'center');
+												q.reject(err);
+											})
+										})
+										.error(function(err){
+											$cordovaToast.show("ERROR al leer archivo funcionesIr", 'long', 'center');
+											q.reject(err);
+											
+										})
+
 									}
-
-									var a = 0;	
-									var arrayFuncionesIrSelecto = [];
-									while(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
-									{
-										arrayFuncionesIrSelecto[a] = arrayfuncionesIr[i];
-										a++;
-										i++;
-									}
-									// fin selecciono solo las funciones del idDispositivoIr
-
-									insertFuncionIr(arrayFuncionesIrSelecto,0,function(res3){
-															q.resolve();
-
-									},function(err){
-										
-										$cordovaToast.show("ERROR insertar funciones ", 'long', 'center');
-										q.reject(err);
 									})
-								})
-								.error(function(err){
-									$cordovaToast.show("ERROR al leer archivo funcionesIr", 'long', 'center');
-									q.reject(err);
-									
-								})
-
 							}
-
-							
 							actualizarLista().then(function(res){
 									
 								var lista=res;	
@@ -906,7 +911,7 @@ function actualizarLista () {
 									
 									q.reject(err);		
 								})		
-							})
+							
 						},
 					function (err) {
 						$cordovaToast.show(err, 'long', 'center');
