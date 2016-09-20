@@ -755,7 +755,9 @@ var vm = this;
 		
 			if(!$stateParams.id)
 			{
+
 				Dispositivos.insertar(vm.nombre, vm.descripcion, vm.idEspacio, vm.urlImagen, vm.idModulo,vm.entradaModulo,vm.idDispositivoIr).then(function(res){
+
 				
 				$ionicHistory.goBack();
 				
@@ -765,7 +767,9 @@ var vm = this;
 			{
 				
 				
+
 				Dispositivos.actualizar(vm.id, vm.nombre, vm.descripcion, vm.idEspacio, vm.urlImagen, vm.idModulo,vm.entradaModulo,vm.idDispositivoIr).then(function(res){
+
 				
 				$ionicHistory.goBack();
 				
