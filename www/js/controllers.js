@@ -417,6 +417,14 @@ var vm = this;
 
 	$scope.$on('$ionicView.enter', function(e) {
 		vm.dispositivo = Dispositivos.seleccionarId($stateParams.id);
+
+		alert("dispositivoId: " + $stateParams.id);
+
+		IR.devolverFuncionesIRPorId($stateParams.id).then(function(res){
+			$scope.listaPrueba=res
+			
+		},function(err){ alert(err)})
+
 		$cordovaToast.show('Conectando a: ' + vm.dispositivo.uuid, 'short', 'center');
 
 		//TEST
@@ -428,11 +436,13 @@ var vm = this;
 		//	})
 		//},function(err){alert("error");});
 
+
+/*
 		IR.filtrarTablaDispositivoIr('aire ').then(function(res){
 			$scope.listaPrueba=res
 			
 		},function(err){ alert(err)})
-		
+*/		
 			
 			/*IR.lista().then(function(res){
 				

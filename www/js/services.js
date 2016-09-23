@@ -616,7 +616,7 @@ function actualizarLista () {
 	function insertFuncionIr  (arrayCod,indexActual,callback,calbackErr) {
 
 	//	alert("insertFuncionIr, arrayCod.length: " + arrayCod.length);
-	//	alert("id: " + arrayCod[indexActual][0] + "fun: " + arrayCod[indexActual][1] + "cod: " + arrayCod[indexActual][2]);
+		alert("id: " + arrayCod[indexActual][0] + "fun: " + arrayCod[indexActual][1] + "cod: " + arrayCod[indexActual][2]);
 		var indexTotal = arrayCod.length - 1;
 
 
@@ -751,14 +751,14 @@ function actualizarLista () {
 			$cordovaSQLite.execute(db, query, [nombre, descripcion, idEspacio, urlImagen, idModulo, entradaModulo,idDispositivoIr])
 			.then(
 					function(res) {
-							//alert("idDispositivoIr: " + idDispositivoIr);
+						    alert("idDispositivoIr: " + idDispositivoIr);
 							if(idDispositivoIr)
 							{ //alert("ENTRO!!");
 							//	alert("llama a existenFuncionesIR con idDispositivoIr: " + idDispositivoIr);
 								//verificar si los codigos existen en la tabla, sino crearlos desde el .csv
 								IR.existenFuncionesIR(idDispositivoIr).then(function(res){
 
-								//alert("existenFuncionesIr: " + res);
+								alert("existenFuncionesIr: " + res);
 
 								if(res == 0)
 								{
@@ -1458,6 +1458,37 @@ function actualizarLista () {
 								
 								
 								
+				return q.promise;
+			},
+
+
+			devolverFuncionesIRPorId: function(idDispositivoIr){
+				
+				var q = $q.defer();
+
+			//	var query = "SELECT id, idDispositivoIr, funcion, codigo  FROM funcionesIr";
+				var query = "SELECT id, idDispositivoIr, funcion, codigo  FROM funcionesIr WHERE idDispositivoIr = ?";
+
+				alert("devolverFuncionesIRPorId");
+
+			//	$cordovaSQLite.execute(db, query)
+				$cordovaSQLite.execute(db, query, [idDispositivoIr])
+				.then(
+						function(res) {				
+							/*
+								if(res.rows.length >= 1)
+									q.resolve(1);	
+								else
+									q.resolve(0);
+									*/ 
+									q.resolve(res);									
+							},
+						function (err) {
+							$cordovaToast.show("ERROR INSERT", 'long', 'center');
+						//	alert("entro a err");
+							q.reject(err);
+							}
+					)
 				return q.promise;
 			},
 
