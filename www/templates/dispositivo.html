@@ -24,7 +24,7 @@
 	<input ng-model="di.intensidad" type="text" placeholder="Intensidad">
 	<md-button ng-click="di.enviar()" class="md-raised">Enviar</md-button>
 -->
-{{listaPrueba}}
+{{listaFuncionesIR}}
 <div ng-if="di.dispositivo.idModuloTipo == 'DIMM'">
 	<div class="list">
 		<div class="item range range-positive">
@@ -52,8 +52,8 @@
 
 <button class="button icon ion-volume-low" ng-click=""></button>
 <button class="button icon ion-volume-high" ng-click=""></button>
-<button class="button icon ion-arrow-up-a" ng-click=""></button>
-<button class="button icon ion-arrow-down-a" ng-click=""></button>
+<button class="button icon ion-arrow-up-a" on-tap ="di.accion('subirCanal')"></button>
+<button class="button icon ion-arrow-down-a" on-tap ="di.accion('bajarCanal')"></button>
 <button class="button icon ion-volume-mute" ng-click=""></button>
  
 <div class="list">

@@ -1467,22 +1467,27 @@ function actualizarLista () {
 				var q = $q.defer();
 
 			//	var query = "SELECT id, idDispositivoIr, funcion, codigo  FROM funcionesIr";
+
 				var query = "SELECT id, idDispositivoIr, funcion, codigo  FROM funcionesIr WHERE idDispositivoIr = ?";
 
-				alert("devolverFuncionesIRPorId");
+				alert("devolverFuncionesIRPorId idDispositivoIr: " + idDispositivoIr);
 
 			//	$cordovaSQLite.execute(db, query)
 				$cordovaSQLite.execute(db, query, [idDispositivoIr])
 				.then(
 						function(res) {				
-							/*
-								if(res.rows.length >= 1)
-									q.resolve(1);	
-								else
-									q.resolve(0);
-									*/ 
-									q.resolve(res);									
-							},
+
+							var respuesta = [];
+							if(res.rows.length > 0) {
+							
+								for(var i=0; i<res.rows.length; i++)
+								{
+										respuesta[i] = res.rows.item(i);
+								}
+							
+							}
+							q.resolve(respuesta);									
+						},
 						function (err) {
 							$cordovaToast.show("ERROR INSERT", 'long', 'center');
 						//	alert("entro a err");
