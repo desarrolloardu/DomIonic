@@ -410,16 +410,22 @@ angular.module('starter.controllers', [])
 		$scope.$on('$ionicView.enter', function (e) {
 
 
-			alert("dispositivoId: " + $stateParams.id);
+		//	alert("dispositivoId: " + $stateParams.id);
 
 			Dispositivos.seleccionarId($stateParams.id).then(function (res) {
 
 				vm.dispositivo = res;
-				//alert("idDispositivoIr: " + idDispositivoIr);
-				IR.devolverFuncionesIRPorId(res.idDispositivoIr).then(function (res) {
-					vm.listaFuncionesIR = res
+			//	alert("Tipo dispositivo: " + res.idModuloTipo);
 
-				}, function (err) { alert(err) })
+				if(res.idModuloTipo == "IR")
+				{// si es tipo IR => cargo las funcionesIR
+					//alert("idDispositivoIr: " + idDispositivoIr);
+				//	alert("es IR => cargo listado de funciones");
+					IR.devolverFuncionesIRPorId(res.idDispositivoIr).then(function (res) {
+						vm.listaFuncionesIR = res
+
+					}, function (err) { alert(err) })
+				}
 			})
 
 
@@ -437,12 +443,15 @@ angular.module('starter.controllers', [])
 
 		vm.accion = function(funcion)
 		{
-		//	alert("accion");
+			
+			//alert("listaFuncionesIR ");
+			//vm.listaIR = vm.listaFuncionesIR;
+
 			var funcionIR = 	vm.listaFuncionesIR.filter(function (elem){
 							return elem.funcion == funcion;
 						})
 
-			alert(funcionIR[0].codigo);
+			alert("funcion: " + funcion + " codigo: " + funcionIR[0].codigo);
 		}
 
 		vm.actualizarValorDimmer = function () {
@@ -730,17 +739,6 @@ angular.module('starter.controllers', [])
 
 		}
 
-
-
-
-
-
-
-
-
-
-
-
 		vm.urlImagen = "./img/ionic.png";
 
 
@@ -750,7 +748,9 @@ angular.module('starter.controllers', [])
 
 				Dispositivos.insertar(vm.nombre, vm.descripcion, vm.idEspacio, vm.urlImagen, vm.idModulo, vm.entradaModulo, vm.idDispositivoIr).then(function (res) {
 
-
+					alert("CONTROLLER insertedId: " + res.insertId);
+					//Si se inserto un nuevo aire => guardo en la tabla de parametros la temperatura inicial
+					alert("VOY POR ACA! en la insercion de la tabla parametros");
 					$ionicHistory.goBack();
 
 				}, function (err) { });

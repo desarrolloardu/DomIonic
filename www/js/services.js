@@ -582,7 +582,7 @@ function actualizarLista () {
 			var respuesta = [];
 		//	var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.idModulo, d.entradaModulo, m.descripcion as moduloDescripcion FROM dispositivos d INNER JOIN modulos m ON d.idModulo = m.id";
 		//	var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.idModulo, d.entradaModulo FROM dispositivos d";
-			var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.entradaModulo,d.idModulo,d.idDispositivoIr, m.uuid, m.clave, m.descripcion AS moduloDescripccion, m.idModuloTipo FROM dispositivos d LEFT OUTER JOIN modulos m ON d.idModulo = m.id  ";
+			var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.entradaModulo,d.idModulo,d.idDispositivoIr, i.tipo, i.marca, i.modelo, m.uuid, m.clave, m.descripcion AS moduloDescripccion, m.idModuloTipo FROM dispositivos d LEFT OUTER JOIN modulos m ON d.idModulo = m.id LEFT OUTER JOIN dispositivoIr i ON i.id = d.idDispositivoIr";
 		
 			$cordovaSQLite.execute(db, query)
 			.then(
@@ -750,7 +750,9 @@ function actualizarLista () {
 			var query = "INSERT INTO dispositivos (nombre, descripcion, idEspacio, urlImagen,idModulo, entradaModulo,idDispositivoIr) VALUES (?,?,?,?,?,?,?)";
 			$cordovaSQLite.execute(db, query, [nombre, descripcion, idEspacio, urlImagen, idModulo, entradaModulo,idDispositivoIr])
 			.then(
-					function(res) {
+					function(resInsert) {
+							//alert("insertId: " + resInsert.insertId);
+
 						    alert("idDispositivoIr: " + idDispositivoIr);
 							if(idDispositivoIr)
 							{ //alert("ENTRO!!");
@@ -767,7 +769,7 @@ function actualizarLista () {
 									//$cordovaFile.checkFile(cordova.file.applicationStorageDirectory, 'modelosIr.csv').then(function(res){
 									$http.get('funcionesIr.csv').success(function(res2) {
 
-									//	alert("va a leer el archivo");
+										//alert("va a leer el archivo");
 										var arrayfuncionesIr = CSVToArray(res2,";");
 										
 										//selecciono solo las funciones del idDispositivoIr
@@ -775,12 +777,12 @@ function actualizarLista () {
 										
 										for(i=0; i<=arrayfuncionesIr.length; i++)
 										{
-										//	alert("i: " + i + " arrayfuncionesIr[i][0]: " + arrayfuncionesIr[i][0] + " - idDispositivoIr:" + idDispositivoIr);
+											//alert("i: " + i + " arrayfuncionesIr[i][0]: " + arrayfuncionesIr[i][0] + " - idDispositivoIr:" + idDispositivoIr);
 											if(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
 												break;
 										}
 
-									//	alert("i: " + i);
+										//alert("i: " + i + " -- arrayfuncionesIr.length: " + arrayfuncionesIr.length);
 										if(i<arrayfuncionesIr.length)
 										{
 											var a = 0;	
@@ -788,23 +790,30 @@ function actualizarLista () {
 											while(arrayfuncionesIr[i][0] == idDispositivoIr.toString())
 											{
 												arrayFuncionesIrSelecto[a] = arrayfuncionesIr[i];
+												//alert("arrayFuncionesIrSelecto[a]: " + arrayFuncionesIrSelecto[a]);
 												a++;
 												i++;
+												//alert("i: " + i);
+												if(i >= arrayfuncionesIr.length)
+												{
+													//alert("saliendo");
+													break;
+												}
 											}
 										
 											//alert("arrayfuncionesIr: " + arrayfuncionesIr.length + " arrayFuncionesIrSelecto: " + arrayFuncionesIrSelecto.length);									
 											// fin selecciono solo las funciones del idDispositivoIr
-											//alert("id: " + arrayFuncionesIrSelecto[0][0] + "fun: " + arrayFuncionesIrSelecto[0][1] + "cod: " + arrayFuncionesIrSelecto[0][2]);
+											alert("id: " + arrayFuncionesIrSelecto[0][0] + "fun: " + arrayFuncionesIrSelecto[0][1] + "cod: " + arrayFuncionesIrSelecto[0][2]);
 											//alert("id: " + arrayFuncionesIrSelecto[1][0] + "fun: " + arrayFuncionesIrSelecto[1][1] + "cod: " + arrayFuncionesIrSelecto[1][2]);
 
-											//	alert("leyo OK el archivo, ahora insertara");
+												alert("leyo OK el archivo, ahora insertara");
 											insertFuncionIr(arrayFuncionesIrSelecto,0,function(res3){
 											//insertDispositivoIr(arrayIr,0,function(res){
 											//	alert("insertarmasivo alert5");
 											//actualizarLista().then(function(res){
 											//	alert("insertarmasivo alert6");
 												//$cordovaFile.createFile(cordova.file.applicationStorageDirectory, 'modelosIr.csv', true)
-											q.resolve();
+											q.resolve(resInsert);
 												
 											/*	
 											},function(err){
@@ -831,14 +840,12 @@ function actualizarLista () {
 							actualizarLista().then(function(res){
 									
 								var lista=res;	
-								q.resolve(res);	
+								q.resolve(resInsert);	
 									
 								},function(err){
 									
 									q.reject(err);		
-								})		
-							
-						
+								})								
 						},
 					function (err) {
 						$cordovaToast.show("ERROR INSERT Dispositivos", 'long', 'center');
@@ -887,6 +894,11 @@ function actualizarLista () {
 													arrayFuncionesIrSelecto[a] = arrayfuncionesIr[i];
 													a++;
 													i++;
+													if(i >= arrayfuncionesIr.length)
+													{
+														//alert("saliendo");
+														break;
+													}
 												}
 												// fin selecciono solo las funciones del idDispositivoIr
 
@@ -1858,8 +1870,14 @@ function actualizarLista () {
 					$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS funcionesIr (id integer primary key AUTOINCREMENT, idDispositivoIr int, funcion text, codigo text)").then(
 	
 	function(res) {	
+		
+					$cordovaSQLite.execute(db, "CREATE TABLE IF NOT EXISTS parametros (id integer primary key AUTOINCREMENT, idDispositivo int, parametro text, valor text)").then(
+
+	function(res) {	
 
 		q.resolve();
+
+		}, function (err) {alert("ERROR TABLA parametros");q.reject(err)});
 
 		}, function (err) {alert("ERROR TABLA funcionesIr");q.reject(err)});
 
