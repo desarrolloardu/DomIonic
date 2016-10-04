@@ -397,9 +397,9 @@ angular.module('starter.controllers', [])
 
 	})
 
-	.controller('DispositivoCtrl', function ($scope, $stateParams, Dispositivos, IR, $ionicPlatform, $cordovaBluetoothSerial, $cordovaToast) {
+	.controller('DispositivoCtrl', function ($scope, $stateParams, Dispositivos, IR, Modulos, $ionicPlatform, $cordovaBluetoothSerial, $cordovaToast) {
 		var vm = this;
-
+ 
 		vm.listar = function () {
 
 			$cordovaBluetoothSerial.list().then(exito, error);
@@ -415,12 +415,13 @@ angular.module('starter.controllers', [])
 			Dispositivos.seleccionarId($stateParams.id).then(function (res) {
 
 				vm.dispositivo = res;
+				vm.temperatura = "-";
 			//	alert("Tipo dispositivo: " + res.idModuloTipo);
 
 				if(res.idModuloTipo == "IR")
 				{// si es tipo IR => cargo las funcionesIR
 					//alert("idDispositivoIr: " + idDispositivoIr);
-				//	alert("es IR => cargo listado de funciones");
+					alert("es IR => cargo listado de funciones");
 					IR.devolverFuncionesIRPorId(res.idDispositivoIr).then(function (res) {
 						vm.listaFuncionesIR = res
 
@@ -444,14 +445,57 @@ angular.module('starter.controllers', [])
 		vm.accion = function(funcion)
 		{
 			
-			//alert("listaFuncionesIR ");
+		//	alert("accion - funcion: " + funcion);
+		//	alert ("lista funciones lenght: " + vm.listaFuncionesIR.length);
+		//	alert ("funcion[1]: " + vm.listaFuncionesIR[1].funcion + " - " + "codigo[1]: " + vm.listaFuncionesIR[1].codigo);
 			//vm.listaIR = vm.listaFuncionesIR;
-
+			//alert("vm.temperatura: " + vm.temperatura);
 			var funcionIR = 	vm.listaFuncionesIR.filter(function (elem){
 							return elem.funcion == funcion;
 						})
 
 			alert("funcion: " + funcion + " codigo: " + funcionIR[0].codigo);
+
+			if(funcion == "subirTemp")
+			{
+				//alert("subirTemp");
+				var temperaturaDispositivo;
+
+				//alert("$stateParams.id: " + $stateParams.id);
+
+				Dispositivos.seleccionarParametro($stateParams.id, "temperatura").then(function (res) {
+						temperaturaDispositivo = res[0];
+						//alert("res: " + res[0].valor);
+					//	alert("temperaturaDispositivo.valor: " + temperaturaDispositivo.valor);
+						var val = parseInt(temperaturaDispositivo.valor);
+						val = val + 1;
+						vm.temperatura = val.toString();
+				//		alert("val: " + val);
+						Dispositivos.actualizarParametro($stateParams.id, "temperatura", val.toString()).then(function (res) {
+					//		alert("actualizo el valor, subio temp val: " + val);
+						}, function (err) { alert(err) })
+
+					}, function (err) { alert(err) })
+				
+			}
+
+			if(funcion == "bajarTemp")
+			{
+				var temperaturaDispositivo;
+
+				Dispositivos.seleccionarParametro($stateParams.id, "temperatura").then(function (res) {
+						temperaturaDispositivo = res[0];
+				//		alert("temperaturaDispositivo.valor: " + temperaturaDispositivo.valor);
+						var val = parseInt(temperaturaDispositivo.valor);
+						val = val - 1;
+						vm.temperatura = val.toString();
+						Dispositivos.actualizarParametro($stateParams.id, "temperatura", val.toString()).then(function (res) {
+					//		alert("actualizo el valor, bajo temp val: " + val);
+						}, function (err) { alert(err) })
+
+					}, function (err) { alert(err) })
+			}
+
 		}
 
 		vm.actualizarValorDimmer = function () {
@@ -697,7 +741,7 @@ angular.module('starter.controllers', [])
 		$scope.seleccionarDispositivoIrModelo = function (item) {
 			if (item != vm.dispositivoIrSelect.modelo) {
 				vm.dispositivoIrSelect.modelo = item;
-				alert(vm.dispositivoIrSelect.modelo),
+			//	alert(vm.dispositivoIrSelect.modelo),
 					IR.filtrarTablaDispositivoIr(vm.dispositivoIrSelect.tipo, vm.dispositivoIrSelect.marca, vm.dispositivoIrSelect.modelo).then(function (res) {
 						$scope.listaDispositivoIr = res;
 						vm.idDispositivoIr = res.idDispositivoIr;
@@ -748,9 +792,23 @@ angular.module('starter.controllers', [])
 
 				Dispositivos.insertar(vm.nombre, vm.descripcion, vm.idEspacio, vm.urlImagen, vm.idModulo, vm.entradaModulo, vm.idDispositivoIr).then(function (res) {
 
-					alert("CONTROLLER insertedId: " + res.insertId);
+					alert("CONTROLLER insertedId: " + res.insertId + " idmodulo: " + vm.idModulo);
 					//Si se inserto un nuevo aire => guardo en la tabla de parametros la temperatura inicial
-					alert("VOY POR ACA! en la insercion de la tabla parametros");
+
+					if(vm.idModulo != null)
+					{
+						var dispositivoInsertado;
+						Dispositivos.seleccionarId(res.insertId).then(function (resDis) {
+							dispositivoInsertado = resDis;
+							alert("DispositivoIR Tipo: " + dispositivoInsertado.tipo);
+							if(dispositivoInsertado.tipo == "aire")
+							{
+								Dispositivos.agregarParametro(res.insertId, "temperatura", "24");
+								alert("inserto");
+							}
+						}, function (err) { })			
+					}
+
 					$ionicHistory.goBack();
 
 				}, function (err) { });
@@ -766,6 +824,8 @@ angular.module('starter.controllers', [])
 
 				}, function (err) { });
 			}
+
+			
 		};
 
 		vm.seleccionarImagen = function () {

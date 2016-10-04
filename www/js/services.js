@@ -991,6 +991,76 @@ function actualizarLista () {
 			
 		},
 		
+		agregarParametro: function(idDispositivo, parametro, valor){
+			
+			var q = $q.defer();
+
+		//	alert("agregando parametro idDispositivo, parametro, valor" + idDispositivo + " " + parametro + " " + valor);
+			var query = "INSERT INTO parametros (idDispositivo, parametro, valor) VALUES (?,?,?)";
+			$cordovaSQLite.execute(db, query, [idDispositivo, parametro, valor])
+			.then(
+					function(res) {							
+								q.resolve(res);	
+						},
+						function (err) {
+							$cordovaToast.show("ERROR INSERT INTO parametros", 'long', 'center');
+							q.reject(err);
+							}
+				)
+			return q.promise;
+		},
+
+		actualizarParametro: function(idDispositivo, parametro, valor){
+			
+			var q = $q.defer();
+
+		//	alert("actualizar parametro idDispositivo, parametro, valor: " + idDispositivo + " " + parametro + " " + valor);
+			var query = "UPDATE parametros SET valor = ? WHERE idDispositivo = ? AND parametro = ?";
+			$cordovaSQLite.execute(db, query, [valor, idDispositivo, parametro])
+			.then(
+					function(res) {							
+								q.resolve(res);	
+						},
+						function (err) {
+							$cordovaToast.show("ERROR UPDATING parametros", 'long', 'center');
+							q.reject(err);
+							}
+				)
+			return q.promise;
+		},
+
+		seleccionarParametro: function(idDispositivo, parametro){
+			
+			var q = $q.defer();
+
+			var respuesta = [];
+
+		//	alert("seleccionar parametro idDispositivo, parametro: " + idDispositivo + " " + parametro);
+			var query = "SELECT valor FROM parametros WHERE idDispositivo = ? AND parametro = ?";
+			$cordovaSQLite.execute(db, query, [idDispositivo, parametro])
+			.then(
+					function(res) {	
+			//			alert("res.rows.length: " + res.rows.length);
+						if(res.rows.length > 0) {		
+							for(var i=0; i<res.rows.length; i++)
+							{
+									respuesta[i] = res.rows.item(i);
+							}				
+
+						} else {
+								$cordovaToast.show("No results found", 'long', 'center');
+							}
+
+								q.resolve(respuesta);	
+						},
+						function (err) {
+							$cordovaToast.show("ERROR SELECT parametros", 'long', 'center');
+			//				alert("error: " + err);
+							q.reject(err);
+							}
+				)
+			return q.promise;
+		},
 		
 		seleccionarId: function(id) {
 			var listaTemp;
