@@ -459,13 +459,12 @@ angular.module('starter.controllers', [])
 		});
 
 
-		vm.accion = function (funcion) {
+		vm.accion = function (funcion, dispositivoIr) {
 
-			//alert("listaFuncionesIR ");
-			//vm.listaIR = vm.listaFuncionesIR;
+			//alert("ENTRO dispositivoIr: " + dispositivoIr);
 
 			var funcionIR = vm.listaFuncionesIR.filter(function (elem) {
-				return elem.funcion == funcion;
+				return ((elem.funcion == funcion) && (elem.idDispositivoIr == dispositivoIr));
 			})
 
 
@@ -487,6 +486,9 @@ angular.module('starter.controllers', [])
 						vm.temperatura = val.toString();
 				//		alert("val: " + val);
 						Dispositivos.actualizarParametro($stateParams.id, "temperatura", val.toString()).then(function (res) {
+					
+							EjecutarComandoIR(funcionIR);
+
 					//		alert("actualizo el valor, subio temp val: " + val);
 						}, function (err) { alert(err) })
 
@@ -506,6 +508,7 @@ angular.module('starter.controllers', [])
 						vm.temperatura = val.toString();
 						Dispositivos.actualizarParametro($stateParams.id, "temperatura", val.toString()).then(function (res) {
 					//		alert("actualizo el valor, bajo temp val: " + val);
+							EjecutarComandoIR(funcionIR);
 						}, function (err) { alert(err) })
 
 					}, function (err) { alert(err) })
@@ -546,10 +549,65 @@ angular.module('starter.controllers', [])
 
 			$cordovaToast.show(vm.toggle, 'short', 'center');
 			//	$cordovaBluetoothSerial.write(vm.dimmerValor+";", enviarExito, error);
+			if (vm.conectBluetooth) {
+				alert ("Ejecutar la accion por Bluetooth");
+				//$cordovaBluetoothSerial.write(vm.dimmerValor + ";", enviarExito, error);
+
+			} else if (vm.conectNetwork) {
+					
+					var UrlSend = "http://domtec.hol.es/admin/modulos/accionar.php?";
+					
+					var idModulo = vm.dispositivo.idModulo;
+					var entrada = vm.dispositivo.entradaModulo;
+					var accion = "Toggle";
+					var valor = vm.toggle;
+					
+				UrlSend = UrlSend + 'idModulo=' + (idModulo || '') + '&entrada=' + (entrada || '') + '&accion=' + (accion || '') + '&valor=' + (valor || '0');
+				
+				alert(UrlSend);
+
+				$http.get(UrlSend)
+					.then(function (response) {
+						//$scope.myWelcome = response.data;
+						alert(response.data);
+					});
+
+			}
 
 		}
 
 
+		function EjecutarComandoIR(funcionIR) {
+			alert ("EjecutarComandoIR: " + funcionIR[0].codigo);
+			//voy a buscar el código de la accion a ejecutar
+
+			
+			if (vm.conectBluetooth) {
+				alert ("Ejecutar la accion por Bluetooth");
+				//$cordovaBluetoothSerial.write(vm.dimmerValor + ";", enviarExito, error);
+
+			} else if (vm.conectNetwork) {
+					
+					var UrlSend = "http://domtec.hol.es/admin/modulos/accionar.php?";
+					
+					var idModulo = vm.dispositivo.idModulo;
+					var entrada = vm.dispositivo.entradaModulo;
+					var accion = funcionIR[0].funcion;
+					var valor = funcionIR[0].codigo;
+					
+				UrlSend = UrlSend + 'idModulo=' + (idModulo || '') + '&entrada=' + (entrada || '') + '&accion=' + (accion || '') + '&valor=' + (valor || '0');
+				
+				alert(UrlSend);
+
+				$http.get(UrlSend)
+					.then(function (response) {
+						//$scope.myWelcome = response.data;
+						alert(response.data);
+					});
+
+			}
+			
+		}
 
 		function desconectar() {
 			$cordovaBluetoothSerial.disconnect().then(desconectarExito, error);

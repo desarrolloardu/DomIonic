@@ -51,20 +51,21 @@
 <div ng-if="di.dispositivo.idModuloTipo == 'IR'">
 {{di.dispositivo.idModuloTipo}}
 {{di.dispositivo.tipo}}
+{{di.dispositivo.idDispositivoIr}}
 
 <div ng-if="di.dispositivo.tipo == 'tv'">
 	<button class="button icon ion-volume-low" ng-click=""></button>
 	<button class="button icon ion-volume-high" ng-click=""></button>
-	<button class="button icon ion-arrow-up-a" on-tap ="di.accion('subirCanal')"></button>
-	<button class="button icon ion-arrow-down-a" on-tap ="di.accion('bajarCanal')"></button>
+	<button class="button icon ion-arrow-up-a" on-tap ="di.accion('subirCanal', di.dispositivo.idDispositivoIr)"></button>
+	<button class="button icon ion-arrow-down-a" on-tap ="di.accion('bajarCanal', di.dispositivo.idDispositivoIr)"></button>
 	<button class="button icon ion-volume-mute" ng-click=""></button>
 </div>
 
 <div ng-if="di.dispositivo.tipo == 'aire'">
 	<button class="button icon ion-android-radio-button-on" ng-click=""></button>
 	<button class="button icon ion-android-radio-button-off" ng-click=""></button>
-	<button class="button icon ion-ios-sunny" on-tap ="di.accion('subirTemp')"></button>
-	<button class="button icon ion-ios-snowy" on-tap ="di.accion('bajarTemp')"></button>
+	<button class="button icon ion-ios-sunny" on-tap ="di.accion('subirTemp', di.dispositivo.idDispositivoIr)"></button>
+	<button class="button icon ion-ios-snowy" on-tap ="di.accion('bajarTemp', di.dispositivo.idDispositivoIr)"></button>
 
 	{{di.temperatura}}
 </div>
