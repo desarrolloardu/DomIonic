@@ -401,7 +401,8 @@ angular.module('starter.controllers', [])
 	.controller('DispositivoCtrl', function ($scope, $stateParams, Dispositivos, IR, $ionicPlatform, $cordovaBluetoothSerial, $cordovaToast, $cordovaNetwork, $http) {
 
 		var vm = this;
- 
+		var contador = 0;
+
 		vm.listar = function () {
 
 			$cordovaBluetoothSerial.list().then(exito, error);
@@ -425,7 +426,7 @@ angular.module('starter.controllers', [])
 
 				vm.dispositivo = res;
 
-			//	alert("Tipo dispositivo: " + res.idModuloTipo);
+				//	alert("Tipo dispositivo: " + res.idModuloTipo);
 
 				//alert("Tipo dispositivo: " + res.idModuloTipo);
 
@@ -470,48 +471,46 @@ angular.module('starter.controllers', [])
 
 			alert("funcion: " + funcion + " codigo: " + funcionIR[0].codigo);
 
-			if(funcion == "subirTemp")
-			{
+			if (funcion == "subirTemp") {
 				//alert("subirTemp");
 				var temperaturaDispositivo;
 
 				//alert("$stateParams.id: " + $stateParams.id);
 
 				Dispositivos.seleccionarParametro($stateParams.id, "temperatura").then(function (res) {
-						temperaturaDispositivo = res[0];
-						//alert("res: " + res[0].valor);
+					temperaturaDispositivo = res[0];
+					//alert("res: " + res[0].valor);
 					//	alert("temperaturaDispositivo.valor: " + temperaturaDispositivo.valor);
-						var val = parseInt(temperaturaDispositivo.valor);
-						val = val + 1;
-						vm.temperatura = val.toString();
-				//		alert("val: " + val);
-						Dispositivos.actualizarParametro($stateParams.id, "temperatura", val.toString()).then(function (res) {
-					
-							EjecutarComandoIR(funcionIR);
+					var val = parseInt(temperaturaDispositivo.valor);
+					val = val + 1;
+					vm.temperatura = val.toString();
+					//		alert("val: " + val);
+					Dispositivos.actualizarParametro($stateParams.id, "temperatura", val.toString()).then(function (res) {
 
-					//		alert("actualizo el valor, subio temp val: " + val);
-						}, function (err) { alert(err) })
+						EjecutarComandoIR(funcionIR);
 
+						//		alert("actualizo el valor, subio temp val: " + val);
 					}, function (err) { alert(err) })
-				
+
+				}, function (err) { alert(err) })
+
 			}
 
-			if(funcion == "bajarTemp")
-			{
+			if (funcion == "bajarTemp") {
 				var temperaturaDispositivo;
 
 				Dispositivos.seleccionarParametro($stateParams.id, "temperatura").then(function (res) {
-						temperaturaDispositivo = res[0];
-				//		alert("temperaturaDispositivo.valor: " + temperaturaDispositivo.valor);
-						var val = parseInt(temperaturaDispositivo.valor);
-						val = val - 1;
-						vm.temperatura = val.toString();
-						Dispositivos.actualizarParametro($stateParams.id, "temperatura", val.toString()).then(function (res) {
-					//		alert("actualizo el valor, bajo temp val: " + val);
-							EjecutarComandoIR(funcionIR);
-						}, function (err) { alert(err) })
-
+					temperaturaDispositivo = res[0];
+					//		alert("temperaturaDispositivo.valor: " + temperaturaDispositivo.valor);
+					var val = parseInt(temperaturaDispositivo.valor);
+					val = val - 1;
+					vm.temperatura = val.toString();
+					Dispositivos.actualizarParametro($stateParams.id, "temperatura", val.toString()).then(function (res) {
+						//		alert("actualizo el valor, bajo temp val: " + val);
+						EjecutarComandoIR(funcionIR);
 					}, function (err) { alert(err) })
+
+				}, function (err) { alert(err) })
 			}
 
 		}
@@ -524,16 +523,16 @@ angular.module('starter.controllers', [])
 				$cordovaBluetoothSerial.write(vm.dimmerValor + ";", enviarExito, error);
 
 			} else if (vm.conectNetwork) {
-					
-					var UrlSend = "http://domtec.hol.es/admin/modulos//accionar.php?";
-					
-					var idModulo = vm.dispositivo.idModulo;
-					var entrada = vm.dispositivo.entradaModulo;
-					var accion = 'intensidad';
-					var valor = vm.dimmerValor;
-					
+
+				var UrlSend = "http://domtec.hol.es/admin/modulos//accionar.php?";
+
+				var idModulo = vm.dispositivo.idModulo;
+				var entrada = vm.dispositivo.entradaModulo;
+				var accion = 'intensidad';
+				var valor = vm.dimmerValor;
+
 				UrlSend = UrlSend + 'idModulo=' + (idModulo || '') + '&entrada=' + (entrada || '') + '&accion=' + (accion || '') + '&valor=' + (valor || '0');
-				
+
 				alert(UrlSend);
 
 				$http.get(UrlSend)
@@ -550,20 +549,31 @@ angular.module('starter.controllers', [])
 			$cordovaToast.show(vm.toggle, 'short', 'center');
 			//	$cordovaBluetoothSerial.write(vm.dimmerValor+";", enviarExito, error);
 			if (vm.conectBluetooth) {
-				alert ("Ejecutar la accion por Bluetooth");
-				//$cordovaBluetoothSerial.write(vm.dimmerValor + ";", enviarExito, error);
+				alert("Ejecutar la accion por Bluetooth");
+
+				var accion;
+				if (vm.toggle)
+					accion = "ON;";
+				else
+					accion = "OFF;";
+
+
+				alert('toggle ' + vm.toggle + ' accion ' + accion);
+
+				$cordovaBluetoothSerial.write(accion, enviarExito, error);
+
 
 			} else if (vm.conectNetwork) {
-					
-					var UrlSend = "http://domtec.hol.es/admin/modulos/accionar.php?";
-					
-					var idModulo = vm.dispositivo.idModulo;
-					var entrada = vm.dispositivo.entradaModulo;
-					var accion = "Toggle";
-					var valor = vm.toggle;
-					
+
+				var UrlSend = "http://domtec.hol.es/admin/modulos/accionar.php?";
+
+				var idModulo = vm.dispositivo.idModulo;
+				var entrada = vm.dispositivo.entradaModulo;
+				var accion = "Toggle";
+				var valor = vm.toggle;
+
 				UrlSend = UrlSend + 'idModulo=' + (idModulo || '') + '&entrada=' + (entrada || '') + '&accion=' + (accion || '') + '&valor=' + (valor || '0');
-				
+
 				alert(UrlSend);
 
 				$http.get(UrlSend)
@@ -578,25 +588,25 @@ angular.module('starter.controllers', [])
 
 
 		function EjecutarComandoIR(funcionIR) {
-			alert ("EjecutarComandoIR: " + funcionIR[0].codigo);
+			alert("EjecutarComandoIR: " + funcionIR[0].codigo);
 			//voy a buscar el código de la accion a ejecutar
 
-			
+
 			if (vm.conectBluetooth) {
-				alert ("Ejecutar la accion por Bluetooth");
+				alert("Ejecutar la accion por Bluetooth");
 				//$cordovaBluetoothSerial.write(vm.dimmerValor + ";", enviarExito, error);
 
 			} else if (vm.conectNetwork) {
-					
-					var UrlSend = "http://domtec.hol.es/admin/modulos/accionar.php?";
-					
-					var idModulo = vm.dispositivo.idModulo;
-					var entrada = vm.dispositivo.entradaModulo;
-					var accion = funcionIR[0].funcion;
-					var valor = funcionIR[0].codigo;
-					
+
+				var UrlSend = "http://domtec.hol.es/admin/modulos/accionar.php?";
+
+				var idModulo = vm.dispositivo.idModulo;
+				var entrada = vm.dispositivo.entradaModulo;
+				var accion = funcionIR[0].funcion;
+				var valor = funcionIR[0].codigo;
+
 				UrlSend = UrlSend + 'idModulo=' + (idModulo || '') + '&entrada=' + (entrada || '') + '&accion=' + (accion || '') + '&valor=' + (valor || '0');
-				
+
 				alert(UrlSend);
 
 				$http.get(UrlSend)
@@ -606,7 +616,7 @@ angular.module('starter.controllers', [])
 					});
 
 			}
-			
+
 		}
 
 		function desconectar() {
@@ -622,6 +632,29 @@ angular.module('starter.controllers', [])
 			alert("conectExito");
 			$cordovaToast.show('Conecto!', 'short', 'center');
 			vm.conectBluetooth = true;
+
+			setTimeout(function () {
+				setInterval(function () {
+					$cordovaBluetoothSerial.write("CN;", enviarExito, error);
+
+				}, 7000)
+
+
+			}, 5000)
+
+
+			var idSet = setInterval(function () {
+
+				$cordovaBluetoothSerial.write("CN;", enviarExito, error);
+				if (contador == 900) {
+					contador = 0;
+					clearInterval(idSet);
+
+				}
+				contador++;
+
+			}, 5);
+
 		};
 
 		function desconectarExito(response) {
@@ -630,7 +663,13 @@ angular.module('starter.controllers', [])
 		}
 
 		function enviarExito(response) {
-			$cordovaToast.show('Envio!', 'short', 'center');
+			//$cordovaToast.show('Envio!', 'short', 'center');
+			//if(contador==5000){
+			//	contador=0;
+			//	}else {
+			//	$cordovaBluetoothSerial.write("ON;", enviarExito, error);
+			//	contador++
+			//	}
 		};
 
 		function enableExito(response) {
@@ -825,11 +864,11 @@ angular.module('starter.controllers', [])
 		$scope.seleccionarDispositivoIrModelo = function (item) {
 			if (item != vm.dispositivoIrSelect.modelo) {
 				vm.dispositivoIrSelect.modelo = item;
-			//	alert(vm.dispositivoIrSelect.modelo),
-					IR.filtrarTablaDispositivoIr(vm.dispositivoIrSelect.tipo, vm.dispositivoIrSelect.marca, vm.dispositivoIrSelect.modelo).then(function (res) {
-						$scope.listaDispositivoIr = res;
-						vm.idDispositivoIr = res.idDispositivoIr;
-					}, function (err) { })
+				//	alert(vm.dispositivoIrSelect.modelo),
+				IR.filtrarTablaDispositivoIr(vm.dispositivoIrSelect.tipo, vm.dispositivoIrSelect.marca, vm.dispositivoIrSelect.modelo).then(function (res) {
+					$scope.listaDispositivoIr = res;
+					vm.idDispositivoIr = res.idDispositivoIr;
+				}, function (err) { })
 
 			}
 			$scope.modalSeleccionarModeloIr.hide();
@@ -879,18 +918,16 @@ angular.module('starter.controllers', [])
 					alert("CONTROLLER insertedId: " + res.insertId + " idmodulo: " + vm.idModulo);
 					//Si se inserto un nuevo aire => guardo en la tabla de parametros la temperatura inicial
 
-					if(vm.idModulo != null)
-					{
+					if (vm.idModulo != null) {
 						var dispositivoInsertado;
 						Dispositivos.seleccionarId(res.insertId).then(function (resDis) {
 							dispositivoInsertado = resDis;
 							alert("DispositivoIR Tipo: " + dispositivoInsertado.tipo);
-							if(dispositivoInsertado.tipo == "aire")
-							{
+							if (dispositivoInsertado.tipo == "aire") {
 								Dispositivos.agregarParametro(res.insertId, "temperatura", "24");
 								alert("inserto");
 							}
-						}, function (err) { })			
+						}, function (err) { })
 					}
 
 					$ionicHistory.goBack();
@@ -909,7 +946,7 @@ angular.module('starter.controllers', [])
 				}, function (err) { });
 			}
 
-			
+
 		};
 
 		vm.seleccionarImagen = function () {
