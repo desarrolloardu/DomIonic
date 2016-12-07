@@ -402,7 +402,9 @@ angular.module('starter.controllers', [])
 
 		var vm = this;
 		var contador = 0;
-
+		var idSet;
+		var idsetKeep;
+		var actualizoToggle;
 		vm.listar = function () {
 
 			$cordovaBluetoothSerial.list().then(exito, error);
@@ -418,6 +420,7 @@ angular.module('starter.controllers', [])
 
 
 			//alert("ENTER: ");
+			actualizoToggle = false;
 
 			Dispositivos.seleccionarId($stateParams.id).then(function (res) {
 
@@ -456,7 +459,12 @@ angular.module('starter.controllers', [])
 
 		$scope.$on('$ionicView.leave', function () {
 
+			clearInterval(idsetKeep);
+
 			$cordovaBluetoothSerial.isConnected().then(desconectar(), failure);
+
+
+
 		});
 
 
@@ -565,14 +573,23 @@ angular.module('starter.controllers', [])
 
 			} else if (vm.conectNetwork) {
 
-				var UrlSend = "http://domtec.hol.es/admin/modulos/accionar.php?";
+				//var UrlSend = "http://domtec.hol.es/admin/modulos/accionar.php?";
+
+				var UrlSend = "http://192.168.1.107/admin/modulos/accionar.php?";
+
+				var accion;
+				if (vm.toggle)
+					accion = "ON";
+				else
+					accion = "OFF";
 
 				var idModulo = vm.dispositivo.idModulo;
 				var entrada = vm.dispositivo.entradaModulo;
-				var accion = "Toggle";
-				var valor = vm.toggle;
+				//var valor = vm.toggle;
 
-				UrlSend = UrlSend + 'idModulo=' + (idModulo || '') + '&entrada=' + (entrada || '') + '&accion=' + (accion || '') + '&valor=' + (valor || '0');
+				//UrlSend = UrlSend + 'idModulo=' + (idModulo || '') + '&entrada=' + (entrada || '') + '&accion=' + (accion || '') + '&valor=' + (valor || '0');
+				
+				UrlSend = UrlSend + 'idModulo=' + (idModulo || '') + '&entrada=' + (entrada || '') + '&accion=' + (accion || '');
 
 				alert(UrlSend);
 
@@ -633,27 +650,24 @@ angular.module('starter.controllers', [])
 			$cordovaToast.show('Conecto!', 'short', 'center');
 			vm.conectBluetooth = true;
 
-			setTimeout(function () {
-				setInterval(function () {
-					$cordovaBluetoothSerial.write("CN;", enviarExito, error);
-
-				}, 7000)
-
-
-			}, 5000)
-
-
-			var idSet = setInterval(function () {
-
+			idSet = setInterval(function () {
 				$cordovaBluetoothSerial.write("CN;", enviarExito, error);
 				if (contador == 900) {
 					contador = 0;
 					clearInterval(idSet);
-
 				}
 				contador++;
+			}, 7);
 
-			}, 5);
+
+			///keep alive
+			setTimeout(function () {
+				idsetKeep = setInterval(function () {
+					$cordovaBluetoothSerial.write("KA;").then(enviarExitoKeepAlive, error);
+
+				}, 2000)
+			}, 10)
+			///keep alive
 
 		};
 
@@ -662,7 +676,31 @@ angular.module('starter.controllers', [])
 			$cordovaToast.show('Desconecto!', 'short', 'center');
 		}
 
+
+		function enviarExitoKeepAlive(response) {
+
+			if (!actualizoToggle) {
+				setTimeout(function () {
+					$cordovaBluetoothSerial.read().then(function (data) {
+						if (data == "ON") {
+							vm.toggle = true;
+							actualizoToggle = true;
+						}
+						if (data == "OFF") {
+							vm.toggle = false;
+							actualizoToggle = true;
+						}
+
+					}, error);
+				}, 500);
+			}
+
+		};
+
+
 		function enviarExito(response) {
+
+
 			//$cordovaToast.show('Envio!', 'short', 'center');
 			//if(contador==5000){
 			//	contador=0;
@@ -678,6 +716,7 @@ angular.module('starter.controllers', [])
 
 
 		function error(response) {
+			alert("errorrrrrr!!");
 			$cordovaToast.show(response, 'short', 'center');
 		};
 
