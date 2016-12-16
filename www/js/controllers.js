@@ -527,7 +527,7 @@ angular.module('starter.controllers', [])
 
 			//	$cordovaToast.show(vm.dimmerValor, 'short', 'center');
 			if (vm.conectBluetooth) {
-
+				$cordovaToast.show(vm.dimmerValor, 'short', 'center');
 				$cordovaBluetoothSerial.write(vm.dimmerValor + ";", enviarExito, error);
 
 			} else if (vm.conectNetwork) {
@@ -574,8 +574,9 @@ angular.module('starter.controllers', [])
 			} else if (vm.conectNetwork) {
 
 				//var UrlSend = "http://domtec.hol.es/admin/modulos/accionar.php?";
-
-				var UrlSend = "http://192.168.1.107/admin/modulos/accionar.php?";
+				
+				var ipServer = "192.168.1.47";
+				var UrlSend = "http://" + ipServer + "/admin/modulos/accionar.php?";
 
 				var accion;
 				if (vm.toggle)
