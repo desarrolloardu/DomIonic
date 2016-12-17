@@ -479,6 +479,8 @@ angular.module('starter.controllers', [])
 
 			alert("funcion: " + funcion + " codigo: " + funcionIR[0].codigo);
 
+			
+
 			if (funcion == "subirTemp") {
 				//alert("subirTemp");
 				var temperaturaDispositivo;
@@ -519,6 +521,11 @@ angular.module('starter.controllers', [])
 					}, function (err) { alert(err) })
 
 				}, function (err) { alert(err) })
+			}
+
+			if ((funcion != "subirTemp") && (funcion != "bajarTemp")){
+				$cordovaToast.show("Enviando codigo: " + funcionIR[0].codigo, 'short', 'center');
+				EjecutarComandoIR(funcionIR);
 			}
 
 		}
