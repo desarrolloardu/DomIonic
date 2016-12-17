@@ -292,7 +292,7 @@ function actualizarLista () {
 	var listaTipoModulos = [
 	{desc:'Dimmer',cod:'DIMM', urlImagen:'img/modulos/dimmer.png'},
 	{desc:"Zapatilla",cod:'ZAP', urlImagen:'img/modulos/zapatilla.png'},
-	{desc:"IR",cod:'IR', urlImagen:'img/modulos/ir.png'},
+	{desc:"IR",cod:'IR', urlImagen:'img/modulos/infra.png'},
 	{desc:"Rele",cod:'REL', urlImagen:'img/modulos/rele.png'}];
 	
 	

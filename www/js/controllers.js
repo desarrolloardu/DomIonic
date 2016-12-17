@@ -612,6 +612,7 @@ angular.module('starter.controllers', [])
 
 			if (vm.conectBluetooth) {
 				alert("Ejecutar la accion por Bluetooth");
+				$cordovaBluetoothSerial.write(funcionIR[0].codigo + ";", enviarExito, error);
 				//$cordovaBluetoothSerial.write(vm.dimmerValor + ";", enviarExito, error);
 
 			} else if (vm.conectNetwork) {
