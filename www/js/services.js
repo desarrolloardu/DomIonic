@@ -4,7 +4,10 @@ angular.module('starter.services', [])
 	var dispositivos = [
 	{desc:'Television',cod:'TV', urlImagen:'./img/dispositivos/television.png'},
 	{desc:'Aire',cod:'Aire', urlImagen:'./img/dispositivos/aire.png'},
-	{desc:"Dimmer",cod:'Dimmer', urlImagen:'./img/dispositivos/luz.png'}]; 
+	{desc:"Luz",cod:'Luz', urlImagen:'./img/dispositivos/luz.png'},
+	{desc:"Pava",cod:'Pava', urlImagen:'./img/dispositivos/pava.png'},
+	{desc:"Microondas",cod:'Microondas', urlImagen:'./img/dispositivos/microondas.png'},
+	{desc:"Tostadora",cod:'Tostadora', urlImagen:'./img/dispositivos/tostadora.png'}]; 
 		
 	var espacios = [
 	{desc:'Bano',cod:'Bano', urlImagen:'./img/espacios/bano.png'},
@@ -287,10 +290,10 @@ function actualizarLista () {
 	db=FactoryDB.punteroDb();
 	
 	var listaTipoModulos = [
-	{desc:'Dimmer',cod:'DIMM', urlImagen:'img/ionic.png'},
-	{desc:"Zapatilla",cod:'ZAP', urlImagen:'img/ionic.png'},
-	{desc:"IR",cod:'IR', urlImagen:'img/ionic.png'},
-	{desc:"Rele",cod:'REL', urlImagen:'img/ionic.png'}];
+	{desc:'Dimmer',cod:'DIMM', urlImagen:'img/modulos/dimmer.png'},
+	{desc:"Zapatilla",cod:'ZAP', urlImagen:'img/modulos/zapatilla.png'},
+	{desc:"IR",cod:'IR', urlImagen:'img/modulos/ir.png'},
+	{desc:"Rele",cod:'REL', urlImagen:'img/modulos/rele.png'}];
 	
 	
 	function dameTipoModulo (cod) {
