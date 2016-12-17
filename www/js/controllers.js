@@ -162,7 +162,7 @@ angular.module('starter.controllers', [])
 			$scope.modalModulos.show();
 
 			$ionicLoading.show({
-				template: 'Buscando Dispositivos...'
+				template: 'Buscando Modulos...'
 			}).then(function () {
 
 
@@ -176,7 +176,7 @@ angular.module('starter.controllers', [])
 						} else {
 
 							var myPopup = $ionicPopup.alert({
-								title: 'No se encontraron dispositivos', // String. The title of the popup.
+								title: 'No se encontraron modulos', // String. The title of the popup.
 								template: 'Vuelva a internar nuevamente en otro momento', // String (optional). The html template to place in the popup body.
 
 							}).then(function (res) {
