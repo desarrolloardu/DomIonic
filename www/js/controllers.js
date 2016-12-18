@@ -477,7 +477,7 @@ angular.module('starter.controllers', [])
 			})
 
 
-			alert("funcion: " + funcion + " codigo: " + funcionIR[0].codigo);
+		//	alert("funcion: " + funcion + " codigo: " + funcionIR[0].codigo);
 
 			
 
@@ -493,15 +493,23 @@ angular.module('starter.controllers', [])
 					//	alert("temperaturaDispositivo.valor: " + temperaturaDispositivo.valor);
 					var val = parseInt(temperaturaDispositivo.valor);
 					val = val + 1;
-					vm.temperatura = val.toString();
+					
+
+					var tempProxima = vm.listaFuncionesIR.filter(function (elem) {
+						return ((elem.funcion == "temp" + val) && (elem.idDispositivoIr == dispositivoIr));
+					})
+
 					//		alert("val: " + val);
-					Dispositivos.actualizarParametro($stateParams.id, "temperatura", val.toString()).then(function (res) {
+					if(tempProxima.length > 0)
+					{
+						Dispositivos.actualizarParametro($stateParams.id, "temperatura", val.toString()).then(function (res) {
+						
+						vm.temperatura = val.toString();
+						EjecutarComandoIR(tempProxima);
 
-						EjecutarComandoIR(funcionIR);
-
-						//		alert("actualizo el valor, subio temp val: " + val);
-					}, function (err) { alert(err) })
-
+						//alert("actualizo el valor, subio temp val: " + val);
+						}, function (err) { alert(err) })
+					}
 				}, function (err) { alert(err) })
 
 			}
@@ -514,17 +522,25 @@ angular.module('starter.controllers', [])
 					//		alert("temperaturaDispositivo.valor: " + temperaturaDispositivo.valor);
 					var val = parseInt(temperaturaDispositivo.valor);
 					val = val - 1;
-					vm.temperatura = val.toString();
-					Dispositivos.actualizarParametro($stateParams.id, "temperatura", val.toString()).then(function (res) {
-						//		alert("actualizo el valor, bajo temp val: " + val);
-						EjecutarComandoIR(funcionIR);
-					}, function (err) { alert(err) })
 
+					var tempProxima = vm.listaFuncionesIR.filter(function (elem) {
+						return ((elem.funcion == "temp" + val) && (elem.idDispositivoIr == dispositivoIr));
+					})
+
+					if(tempProxima.length > 0)
+					{
+						
+						Dispositivos.actualizarParametro($stateParams.id, "temperatura", val.toString()).then(function (res) {
+							//		alert("actualizo el valor, bajo temp val: " + val);
+							vm.temperatura = val.toString();
+							EjecutarComandoIR(tempProxima);
+						}, function (err) { alert(err) })
+					}
 				}, function (err) { alert(err) })
 			}
 
 			if ((funcion != "subirTemp") && (funcion != "bajarTemp")){
-				$cordovaToast.show("Enviando codigo: " + funcionIR[0].codigo, 'short', 'center');
+			//	$cordovaToast.show("Enviando codigo: " + funcionIR[0].codigo, 'short', 'center');
 				EjecutarComandoIR(funcionIR);
 			}
 
@@ -613,12 +629,12 @@ angular.module('starter.controllers', [])
 
 
 		function EjecutarComandoIR(funcionIR) {
-			alert("EjecutarComandoIR: " + funcionIR[0].codigo);
+		//	alert("EjecutarComandoIR: " + funcionIR[0].codigo);
 			//voy a buscar el código de la accion a ejecutar
 
 
 			if (vm.conectBluetooth) {
-				alert("Ejecutar la accion por Bluetooth");
+			//	alert("Ejecutar la accion por Bluetooth");
 				$cordovaBluetoothSerial.write(funcionIR[0].codigo + ";", enviarExito, error);
 				//$cordovaBluetoothSerial.write(vm.dimmerValor + ";", enviarExito, error);
 

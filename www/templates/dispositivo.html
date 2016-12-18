@@ -40,35 +40,43 @@
 </div>
 
 <div ng-if="di.dispositivo.idModuloTipo == 'REL'">
-	<label class="toggle">
-		<input type="checkbox" ng-model="di.toggle" ng-change="di.toggleClick()">
-		<div class="track">
-			<div class="handle"></div>
-		</div>
-	</label>
+
+
+				<label class="toggle toggle-positive">
+					<input type="checkbox" ng-model="di.toggle" ng-change="di.toggleClick()">
+					<div class="track">
+						<div class="handle"></div>
+					</div>
+				</label>
+	
 
 </div>
 
 <div ng-if="di.dispositivo.idModuloTipo == 'ZAP'">
-	<label class="toggle">
-		<input type="checkbox" ng-model="di.toggle" ng-change="di.toggleClick()">
-		<div class="track">
-			<div class="handle"></div>
-		</div>
-	</label>
 
-	</br></br></br>
+	<div ng-if="di.dispositivo.entradaModulo == '1'">
 
-	<div class="list">
-		<div class="item range range-positive">
-			<i class="icon ion-ios-sunny-outline"></i>
-			<input type="range" name="volume" min="0" max="20" value="0" ng-model="di.dimmerValor" ng-change="di.actualizarValorDimmer()">
-			<i class="icon ion-ios-sunny"></i>
-		</div>
+				<label class="toggle toggle-positive">
+					<input type="checkbox" ng-model="di.toggle" ng-change="di.toggleClick()">
+					<div class="track">
+						<div class="handle"></div>
+					</div>
+				</label>
+
 	</div>
 
-	<button class="button icon ion-battery-empty" ng-click="di.dimmerValor=0;di.actualizarValorDimmer()"></button>
-  <button class="button icon ion-battery-full" ng-click="di.dimmerValor=20;di.actualizarValorDimmer()"></button>
+	<div ng-if="di.dispositivo.entradaModulo == '2'">
+		<div class="list">
+			<div class="item range range-positive">
+				<i class="icon ion-ios-sunny-outline"></i>
+				<input type="range" name="volume" min="0" max="20" value="0" ng-model="di.dimmerValor" ng-change="di.actualizarValorDimmer()">
+				<i class="icon ion-ios-sunny"></i>
+			</div>
+		</div>
+
+		<button class="button icon ion-battery-empty" ng-click="di.dimmerValor=0;di.actualizarValorDimmer()"></button>
+		<button class="button icon ion-battery-full" ng-click="di.dimmerValor=20;di.actualizarValorDimmer()"></button>
+	</div>
 
 </div>
 
@@ -76,18 +84,19 @@
 {{di.dispositivo.idModuloTipo}}
 {{di.dispositivo.tipo}}
 {{di.dispositivo.idDispositivoIr}}
+{{di.dispositivo.entradaModulo}}
 
 <div ng-if="di.dispositivo.tipo == 'tv'">
-	<button class="button icon ion-volume-low" ng-click=""></button>
-	<button class="button icon ion-volume-high" ng-click=""></button>
+	<button class="button icon ion-volume-low" on-tap ="di.accion('bajarVolumen', di.dispositivo.idDispositivoIr)"></button>
+	<button class="button icon ion-volume-high" on-tap ="di.accion('subirVolumen', di.dispositivo.idDispositivoIr)"></button>
 	<button class="button icon ion-arrow-up-a" on-tap ="di.accion('subirCanal', di.dispositivo.idDispositivoIr)"></button>
 	<button class="button icon ion-arrow-down-a" on-tap ="di.accion('bajarCanal', di.dispositivo.idDispositivoIr)"></button>
-	<button class="button icon ion-volume-mute" ng-click=""></button>
+	<button class="button icon ion-volume-mute" on-tap ="di.accion('power', di.dispositivo.idDispositivoIr)"></button>
 </div>
 
 <div ng-if="di.dispositivo.tipo == 'aire'">
-	<button class="button icon ion-android-radio-button-on" ng-click=""></button>
-	<button class="button icon ion-android-radio-button-off" ng-click=""></button>
+	<button class="button icon ion-android-radio-button-on" on-tap ="di.accion('power24', di.dispositivo.idDispositivoIr)"></button>
+	<button class="button icon ion-android-radio-button-off" on-tap ="di.accion('poweroff', di.dispositivo.idDispositivoIr)"></button>
 	<button class="button icon ion-ios-sunny" on-tap ="di.accion('subirTemp', di.dispositivo.idDispositivoIr)"></button>
 	<button class="button icon ion-ios-snowy" on-tap ="di.accion('bajarTemp', di.dispositivo.idDispositivoIr)"></button>
 
