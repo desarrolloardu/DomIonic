@@ -585,7 +585,7 @@ function actualizarLista () {
 			var respuesta = [];
 		//	var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.idModulo, d.entradaModulo, m.descripcion as moduloDescripcion FROM dispositivos d INNER JOIN modulos m ON d.idModulo = m.id";
 		//	var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.idModulo, d.entradaModulo FROM dispositivos d";
-			var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.entradaModulo,d.idModulo,d.idDispositivoIr, i.tipo, i.marca, i.modelo, m.uuid, m.clave, m.descripcion AS moduloDescripccion, m.idModuloTipo FROM dispositivos d LEFT OUTER JOIN modulos m ON d.idModulo = m.id LEFT OUTER JOIN dispositivoIr i ON i.id = d.idDispositivoIr";
+			var query = "SELECT d.id, d.nombre, d.descripcion, d.idEspacio, d.urlImagen, d.entradaModulo,d.idModulo,d.idDispositivoIr, i.tipo, i.marca, i.modelo, m.uuid, m.clave, m.descripcion AS moduloDescripccion, m.idModuloTipo, m.nombre AS moduloNombre FROM dispositivos d LEFT OUTER JOIN modulos m ON d.idModulo = m.id LEFT OUTER JOIN dispositivoIr i ON i.id = d.idDispositivoIr";
 		
 			$cordovaSQLite.execute(db, query)
 			.then(
@@ -619,7 +619,7 @@ function actualizarLista () {
 	function insertFuncionIr  (arrayCod,indexActual,callback,calbackErr) {
 
 	//	alert("insertFuncionIr, arrayCod.length: " + arrayCod.length);
-		alert("id: " + arrayCod[indexActual][0] + "fun: " + arrayCod[indexActual][1] + "cod: " + arrayCod[indexActual][2]);
+	//	alert("id: " + arrayCod[indexActual][0] + "fun: " + arrayCod[indexActual][1] + "cod: " + arrayCod[indexActual][2]);
 		var indexTotal = arrayCod.length - 1;
 
 
@@ -756,14 +756,14 @@ function actualizarLista () {
 					function(resInsert) {
 							//alert("insertId: " + resInsert.insertId);
 
-						    alert("idDispositivoIr: " + idDispositivoIr);
+					//	    alert("idDispositivoIr: " + idDispositivoIr);
 							if(idDispositivoIr)
 							{ //alert("ENTRO!!");
 							//	alert("llama a existenFuncionesIR con idDispositivoIr: " + idDispositivoIr);
 								//verificar si los codigos existen en la tabla, sino crearlos desde el .csv
 								IR.existenFuncionesIR(idDispositivoIr).then(function(res){
 
-								alert("existenFuncionesIr: " + res);
+					//			alert("existenFuncionesIr: " + res);
 
 								if(res == 0)
 								{
@@ -806,10 +806,10 @@ function actualizarLista () {
 										
 											//alert("arrayfuncionesIr: " + arrayfuncionesIr.length + " arrayFuncionesIrSelecto: " + arrayFuncionesIrSelecto.length);									
 											// fin selecciono solo las funciones del idDispositivoIr
-											alert("id: " + arrayFuncionesIrSelecto[0][0] + "fun: " + arrayFuncionesIrSelecto[0][1] + "cod: " + arrayFuncionesIrSelecto[0][2]);
+									//		alert("id: " + arrayFuncionesIrSelecto[0][0] + "fun: " + arrayFuncionesIrSelecto[0][1] + "cod: " + arrayFuncionesIrSelecto[0][2]);
 											//alert("id: " + arrayFuncionesIrSelecto[1][0] + "fun: " + arrayFuncionesIrSelecto[1][1] + "cod: " + arrayFuncionesIrSelecto[1][2]);
 
-												alert("leyo OK el archivo, ahora insertara");
+									//			alert("leyo OK el archivo, ahora insertara");
 											insertFuncionIr(arrayFuncionesIrSelecto,0,function(res3){
 											//insertDispositivoIr(arrayIr,0,function(res){
 											//	alert("insertarmasivo alert5");
@@ -1555,7 +1555,7 @@ function actualizarLista () {
 
 				var query = "SELECT id, idDispositivoIr, funcion, codigo  FROM funcionesIr WHERE idDispositivoIr = ?";
 
-				alert("devolverFuncionesIRPorId idDispositivoIr: " + idDispositivoIr);
+			//	alert("devolverFuncionesIRPorId idDispositivoIr: " + idDispositivoIr);
 
 			//	$cordovaSQLite.execute(db, query)
 				$cordovaSQLite.execute(db, query, [idDispositivoIr])

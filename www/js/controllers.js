@@ -10,6 +10,8 @@ angular.module('starter.controllers', [])
 
 	.controller('AppCtrl', function ($scope, $ionicModal, $state, $timeout, FactoryDB) {
 
+
+		
 		// With the new view caching in Ionic, Controllers are only called
 		// when they are recreated or on app start, instead of every page change.
 		// To listen for when this page is active (for example, to refresh data),
@@ -396,7 +398,7 @@ angular.module('starter.controllers', [])
 
 
 	})
-
+		var ipServer = "http://192.168.1.26";
 
 	.controller('DispositivoCtrl', function ($scope, $stateParams, Dispositivos, IR, $ionicPlatform, $cordovaBluetoothSerial, $cordovaToast, $cordovaNetwork, $http) {
 
@@ -447,7 +449,7 @@ angular.module('starter.controllers', [])
 
 				//alert('Conectando a: ');
 
-				$cordovaToast.show('Conectando a: ' + vm.dispositivo.uuid, 'short', 'center');
+				$cordovaToast.show('Conectando a: ' + vm.dispositivo.nombre, 'short', 'center');
 
 
 				conectar(vm.dispositivo.uuid);
@@ -554,22 +556,27 @@ angular.module('starter.controllers', [])
 				$cordovaBluetoothSerial.write(vm.dimmerValor + ";", enviarExito, error);
 
 			} else if (vm.conectNetwork) {
-
-				var UrlSend = "http://domtec.hol.es/admin/modulos//accionar.php?";
-
-				var idModulo = vm.dispositivo.idModulo;
+				//alert("entro por wifi");
+				//var UrlSend = "http://domtec.hol.es/admin/modulos//accionar.php?";
+				var UrlSend = ipServer + "/admin/modulos//accionar.php?";
+				
+				var idModulo = vm.dispositivo.moduloNombre.split("/")[1];
 				var entrada = vm.dispositivo.entradaModulo;
-				var accion = 'intensidad';
+				
+				var accion = 'DIM';
+				
 				var valor = vm.dimmerValor;
 
 				UrlSend = UrlSend + 'idModulo=' + (idModulo || '') + '&entrada=' + (entrada || '') + '&accion=' + (accion || '') + '&valor=' + (valor || '0');
-
-				alert(UrlSend);
+				
 
 				$http.get(UrlSend)
 					.then(function (response) {
 						//$scope.myWelcome = response.data;
 						alert(response.data);
+					},function(){
+
+						alert("hubo un error");
 					});
 
 			}
@@ -580,7 +587,7 @@ angular.module('starter.controllers', [])
 			$cordovaToast.show(vm.toggle, 'short', 'center');
 			//	$cordovaBluetoothSerial.write(vm.dimmerValor+";", enviarExito, error);
 			if (vm.conectBluetooth) {
-				alert("Ejecutar la accion por Bluetooth");
+			//	alert("Ejecutar la accion por Bluetooth");
 
 				var accion;
 				if (vm.toggle)
@@ -589,7 +596,7 @@ angular.module('starter.controllers', [])
 					accion = "OFF;";
 
 
-				alert('toggle ' + vm.toggle + ' accion ' + accion);
+			//	alert('toggle ' + vm.toggle + ' accion ' + accion);
 
 				$cordovaBluetoothSerial.write(accion, enviarExito, error);
 
@@ -598,8 +605,8 @@ angular.module('starter.controllers', [])
 
 				//var UrlSend = "http://domtec.hol.es/admin/modulos/accionar.php?";
 				
-				var ipServer = "192.168.1.47";
-				var UrlSend = "http://" + ipServer + "/admin/modulos/accionar.php?";
+				
+				var UrlSend = ipServer + "/admin/modulos/accionar.php?";
 
 				var accion;
 				if (vm.toggle)
@@ -607,7 +614,7 @@ angular.module('starter.controllers', [])
 				else
 					accion = "OFF";
 
-				var idModulo = vm.dispositivo.idModulo;
+				var idModulo = vm.dispositivo.moduloNombre.split("/")[1];
 				var entrada = vm.dispositivo.entradaModulo;
 				//var valor = vm.toggle;
 
@@ -615,12 +622,13 @@ angular.module('starter.controllers', [])
 				
 				UrlSend = UrlSend + 'idModulo=' + (idModulo || '') + '&entrada=' + (entrada || '') + '&accion=' + (accion || '');
 
-				alert(UrlSend);
+			//	alert(UrlSend);
 
 				$http.get(UrlSend)
 					.then(function (response) {
 						//$scope.myWelcome = response.data;
-						alert(response.data);
+						$cordovaToast.show(response.data, 'short', 'center');
+					//	alert(response.data);
 					});
 
 			}
@@ -649,7 +657,7 @@ angular.module('starter.controllers', [])
 
 				UrlSend = UrlSend + 'idModulo=' + (idModulo || '') + '&entrada=' + (entrada || '') + '&accion=' + (accion || '') + '&valor=' + (valor || '0');
 
-				alert(UrlSend);
+			//	alert(UrlSend);
 
 				$http.get(UrlSend)
 					.then(function (response) {
@@ -671,18 +679,19 @@ angular.module('starter.controllers', [])
 		};
 
 		function conectExito(response) {
-			alert("conectExito");
-			$cordovaToast.show('Conecto!', 'short', 'center');
+			
+		//	alert("conectExito");
+			$cordovaToast.show('Vinculado', 'short', 'center');
 			vm.conectBluetooth = true;
 
 			idSet = setInterval(function () {
 				$cordovaBluetoothSerial.write("CN;", enviarExito, error);
-				if (contador == 900) {
+				if (contador == 20) {
 					contador = 0;
 					clearInterval(idSet);
 				}
 				contador++;
-			}, 7);
+			},200);
 
 
 			///keep alive
@@ -698,7 +707,7 @@ angular.module('starter.controllers', [])
 
 		function desconectarExito(response) {
 			//alert("Desconecto!");
-			$cordovaToast.show('Desconecto!', 'short', 'center');
+			$cordovaToast.show('Desvinculado', 'short', 'center');
 		}
 
 
@@ -741,13 +750,13 @@ angular.module('starter.controllers', [])
 
 
 		function error(response) {
-			alert("errorrrrrr!!");
+		//	alert("errorrrrrr!!");
 			$cordovaToast.show(response, 'short', 'center');
 		};
 
 		function errorConexionBluetooth(response) {
 
-			alert("errorConexionBluetooth");
+			alert("error Conexion Bluetooth");
 			vm.conectBluetooth = false;
 			var isOnline = $cordovaNetwork.isOnline()
 
@@ -979,17 +988,17 @@ angular.module('starter.controllers', [])
 
 				Dispositivos.insertar(vm.nombre, vm.descripcion, vm.idEspacio, vm.urlImagen, vm.idModulo, vm.entradaModulo, vm.idDispositivoIr).then(function (res) {
 
-					alert("CONTROLLER insertedId: " + res.insertId + " idmodulo: " + vm.idModulo);
+				//	alert("CONTROLLER insertedId: " + res.insertId + " idmodulo: " + vm.idModulo);
 					//Si se inserto un nuevo aire => guardo en la tabla de parametros la temperatura inicial
 
 					if (vm.idModulo != null) {
 						var dispositivoInsertado;
 						Dispositivos.seleccionarId(res.insertId).then(function (resDis) {
 							dispositivoInsertado = resDis;
-							alert("DispositivoIR Tipo: " + dispositivoInsertado.tipo);
+						//	alert("DispositivoIR Tipo: " + dispositivoInsertado.tipo);
 							if (dispositivoInsertado.tipo == "aire") {
 								Dispositivos.agregarParametro(res.insertId, "temperatura", "24");
-								alert("inserto");
+							//	alert("inserto");
 							}
 						}, function (err) { })
 					}
